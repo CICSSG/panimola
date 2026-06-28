@@ -1,7 +1,6 @@
 "use client"
 
 import { useUser, SignOutButton } from "@clerk/nextjs"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { LogOut } from "lucide-react"
@@ -32,7 +31,6 @@ const inputClass =
 
 export default function OnboardingPage() {
   const { user, isLoaded } = useUser()
-  const router = useRouter()
 
   const [cys, setCys] = useState("")
   const [studentNumber, setStudentNumber] = useState("")
@@ -58,7 +56,7 @@ export default function OnboardingPage() {
     })
 
     if (res.ok) {
-      router.push("/")
+      window.location.href = "/"
     } else {
       const data = await res.json()
       setError(data.message ?? "Something went wrong")

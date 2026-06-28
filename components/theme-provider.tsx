@@ -82,7 +82,7 @@ export function ThemeToggle({
   return (
     <button
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className={className ?? "flex flex-row flex-nowrap items-center gap-2 text-nowrap"}
+      className={className ?? "flex flex-row flex-nowrap items-center gap-2 text-nowrap w-full"}
     >
       {resolvedTheme === "dark" ? <SunMedium size={16} /> : <Moon size={16} />}
       {resolvedTheme === "dark" ? "Switch to Light" : "Switch to Dark"}

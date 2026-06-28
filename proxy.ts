@@ -45,6 +45,25 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(new URL("/sign-in", req.url))
   }
 
+  // Block already-onboarded users from accessing onboarding
+  if (isAuthenticated && isOnboardingRoute(req)) {
+    if (metadata?.role) {
+      return NextResponse.redirect(new URL("/", req.url))
+    }
+    try {
+      const checkUrl = new URL("/api/checkUser", req.url)
+      const res = await fetch(checkUrl, {
+        headers: { cookie: req.headers.get("cookie") ?? "" },
+      })
+      const { exists } = await res.json()
+      if (exists) {
+        return NextResponse.redirect(new URL("/", req.url))
+      }
+    } catch {
+      // checkUser unavailable — allow through
+    }
+  }
+
   // In production, revoke and delete any session whose email isn't @dlsud.edu.ph.
   // Excluded: auth routes and /api/signout itself to avoid redirect loops.
   if (
