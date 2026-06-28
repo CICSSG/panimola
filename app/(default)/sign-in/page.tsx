@@ -1,6 +1,6 @@
 "use client"
 
-import { useClerk } from "@clerk/nextjs"
+import { useClerk, useAuth } from "@clerk/nextjs"
 import { useSearchParams } from "next/navigation"
 import { useState, Suspense } from "react"
 import { motion } from "framer-motion"
@@ -9,6 +9,7 @@ const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
 
 function SignInForm() {
   const clerk = useClerk()
+  const { isLoaded, isSignedIn } = useAuth()
   const searchParams = useSearchParams()
   const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/"
   const errorParam = searchParams.get("error")
@@ -17,6 +18,14 @@ function SignInForm() {
     errorParam === "domain" ? "Only @dlsud.edu.ph accounts are allowed to sign in." : null
   )
   const [loading, setLoading] = useState(false)
+
+  if (!isLoaded || isSignedIn) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <div className="h-6 w-6 animate-spin rounded-full border-4 border-black border-t-transparent" />
+      </div>
+    )
+  }
 
   async function handleMicrosoftSignIn() {
     setError(null)
