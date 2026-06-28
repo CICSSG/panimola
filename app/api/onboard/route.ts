@@ -2,6 +2,9 @@ import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import clientPromise from "@/lib/mongodb"
 
+const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
+const ALLOWED_DOMAIN = "@dlsud.edu.ph"
+
 export async function POST(req: Request) {
   const { userId } = await auth()
   if (!userId) {
@@ -9,6 +12,10 @@ export async function POST(req: Request) {
   }
 
   const { firstName, lastName, email, cys, studentNumber, facebookLink } = await req.json()
+
+  if (IS_PRODUCTION && !email?.endsWith(ALLOWED_DOMAIN)) {
+    return NextResponse.json({ message: "Only @dlsud.edu.ph accounts are allowed." }, { status: 403 })
+  }
 
   if (!firstName || !lastName || !email || !cys || !studentNumber) {
     return NextResponse.json({ message: "Missing required fields" }, { status: 400 })

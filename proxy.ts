@@ -6,7 +6,6 @@ const isManagementRoutes = createRouteMatcher(["/admin(.*)", "/data(.*)", "/comp
 const isLoggedInRoute = createRouteMatcher(["/connect(.*)", "/profile(.*)", "/missions(.*)"])
 const isAuthRoute = createRouteMatcher(["/sign-in", "/sso-callback"])
 const isOnboardingRoute = createRouteMatcher(["/onboarding"])
-const isPublicApiRoute = createRouteMatcher(["/api/signout"])
 
 const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
 const ALLOWED_DOMAIN = "@dlsud.edu.ph"
@@ -31,25 +30,38 @@ export default clerkMiddleware(async (auth, req) => {
   const isAdminUser = metadata?.isAdmin || metadata?.role === "admin"
   const defaultManagementRoute = getDefaultManagementRoute(pageAccess, normalizedAdminRole, metadata?.assignedCompany)
 
-  // Redirect signed-in users away from auth routes
-  if (isAuthenticated && isAuthRoute(req)) {
+  // Redirect signed-in users away from auth routes (but not the domain error landing)
+  const isSignInErrorPage = req.nextUrl.pathname === "/sign-in" && req.nextUrl.searchParams.has("error")
+  if (isAuthenticated && isAuthRoute(req) && !isSignInErrorPage) {
     return NextResponse.redirect(new URL("/", req.url))
   }
 
-  // In production, sign out users whose email doesn't match the allowed domain
+  // Block unauthenticated access to onboarding
+  if (!isAuthenticated && isOnboardingRoute(req)) {
+    return NextResponse.redirect(new URL("/sign-in", req.url))
+  }
+
+  // In production, revoke and delete any session whose email isn't @dlsud.edu.ph.
+  // Excluded: auth routes and /api/signout itself to avoid redirect loops.
   if (
     IS_PRODUCTION &&
     userId &&
     isAuthenticated &&
     !isAuthRoute(req) &&
-    !isPublicApiRoute(req) &&
+    !isSignInErrorPage &&
+    req.nextUrl.pathname !== "/api/signout" &&
     !req.nextUrl.pathname.startsWith("/api")
   ) {
-    const client = await clerkClient()
-    const user = await client.users.getUser(userId)
-    const email = user.primaryEmailAddress?.emailAddress ?? ""
-    if (!email.endsWith(ALLOWED_DOMAIN)) {
-      return NextResponse.redirect(new URL("/api/signout", req.url))
+    try {
+      const client = await clerkClient()
+      const user = await client.users.getUser(userId)
+      const email = user.primaryEmailAddress?.emailAddress ?? ""
+      if (!email.endsWith(ALLOWED_DOMAIN)) {
+        return NextResponse.redirect(new URL("/api/signout", req.url))
+      }
+    } catch {
+      // User not found (already deleted) — treat as unauthorized
+      return NextResponse.redirect(new URL("/sign-in?error=domain", req.url))
     }
   }
 
@@ -62,13 +74,17 @@ export default clerkMiddleware(async (auth, req) => {
     !isOnboardingRoute(req) &&
     !req.nextUrl.pathname.startsWith("/api")
   ) {
-    const checkUrl = new URL("/api/checkUser", req.url)
-    const res = await fetch(checkUrl, {
-      headers: { cookie: req.headers.get("cookie") ?? "" },
-    })
-    const { exists } = await res.json()
-    if (!exists) {
-      return NextResponse.redirect(new URL("/onboarding", req.url))
+    try {
+      const checkUrl = new URL("/api/checkUser", req.url)
+      const res = await fetch(checkUrl, {
+        headers: { cookie: req.headers.get("cookie") ?? "" },
+      })
+      const { exists } = await res.json()
+      if (!exists) {
+        return NextResponse.redirect(new URL("/onboarding", req.url))
+      }
+    } catch {
+      // checkUser unavailable — let the request through
     }
   }
 
@@ -109,7 +125,7 @@ export default clerkMiddleware(async (auth, req) => {
     if (!isAuthenticated) {
       const redirectUrl = `${req.nextUrl.pathname}${req.nextUrl.search}`
       return NextResponse.redirect(
-        new URL(`/signin?redirect_url=${encodeURIComponent(redirectUrl)}`, req.url)
+        new URL(`/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`, req.url)
       )
     }
   }

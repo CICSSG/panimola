@@ -69,7 +69,7 @@ export default function OnboardingPage() {
 
   return (
     <div
-      className="relative flex min-h-svh items-center justify-center overflow-hidden p-4 sm:p-6"
+      className="relative flex min-h-svh items-center justify-center overflow-hidden p-4 sm:p-6 -mt-8"
       style={{
         backgroundImage: `
           linear-gradient(rgba(0,0,0,0.07) 1px, transparent 1px),
