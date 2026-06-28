@@ -30,8 +30,12 @@ export default clerkMiddleware(async (auth, req) => {
   const isAdminUser = metadata?.isAdmin || metadata?.role === "admin"
   const defaultManagementRoute = getDefaultManagementRoute(pageAccess, normalizedAdminRole, metadata?.assignedCompany)
 
-  // Redirect signed-in users away from auth routes (but not the domain error landing)
+  // Signed-in users on the domain error page stay there — they were kicked out
+  // for using a non-dlsud account and must not be bounced to "/" (which would
+  // re-trigger the domain check → signout loop).
   const isSignInErrorPage = req.nextUrl.pathname === "/sign-in" && req.nextUrl.searchParams.has("error")
+
+  // Redirect signed-in users away from all other auth routes.
   if (isAuthenticated && isAuthRoute(req) && !isSignInErrorPage) {
     return NextResponse.redirect(new URL("/", req.url))
   }
