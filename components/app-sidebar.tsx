@@ -1,3 +1,4 @@
+"use client"
 
 import * as React from "react"
 
@@ -11,14 +12,25 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
-import { BarChart2, Building2, CalendarDays, LayoutDashboardIcon, ListIcon, PlayCircle, Target, UsersIcon } from "lucide-react"
-import Image from "next/image"
+import {
+  BarChart2,
+  Building2,
+  CalendarDays,
+  LayoutDashboardIcon,
+  ListIcon,
+  PlayCircle,
+  Target,
+  UsersIcon,
+} from "lucide-react"
 import {
   getVisibleManagementSections,
   type ManagementPageDefinition,
   type PageAccess,
 } from "@/lib/management-permissions"
+import { ThemeToggle } from "./theme-provider"
+import { Separator } from "./ui/separator"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   userData?: any
@@ -35,8 +47,14 @@ const iconByKey = {
 } satisfies Record<ManagementPageDefinition["iconKey"], React.ReactNode>
 
 export function AppSidebar({ userData, ...props }: AppSidebarProps) {
-  const adminRole = userData?.publicMetadata?.adminRole as "superadmin" | "admin" | null
-  const pageAccess = userData?.publicMetadata?.pageAccess as PageAccess | undefined
+  const { open } = useSidebar()
+  const adminRole = userData?.publicMetadata?.adminRole as
+    | "superadmin"
+    | "admin"
+    | null
+  const pageAccess = userData?.publicMetadata?.pageAccess as
+    | PageAccess
+    | undefined
 
   const visibleSections = getVisibleManagementSections(pageAccess, adminRole)
   const sectionsWithIcons = visibleSections.map((section) => ({
@@ -48,7 +66,7 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
   }))
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -69,13 +87,32 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {sectionsWithIcons.map((section) => (
-          <NavMain key={section.key} data={section} />
+        {sectionsWithIcons.map((section, index) => (
+          <React.Fragment key={section.key}>
+            {index > 0 && !open && (
+              <Separator
+                orientation="horizontal"
+                className="mx-2 ml-auto h-4 data-vertical:self-auto"
+              />
+            )}
+            <NavMain data={section} />
+          </React.Fragment>
         ))}
-        {/* <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
+        <Separator
+          orientation="horizontal"
+          className="mx-2 ml-auto h-4 data-vertical:self-auto"
+        />
+
+        <SidebarMenuItem key="test">
+          <SidebarMenuButton
+            tooltip="Switch Theme"
+            className={open ? "border p-2" : "border"}
+          >
+            <ThemeToggle />
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>

@@ -4,6 +4,7 @@ import { canAccessManagementPath, getDefaultManagementRoute, type PageAccess } f
 
 const isManagementRoutes = createRouteMatcher(["/admin(.*)", "/data(.*)", "/company(.*)"])
 const isLoggedInRoute = createRouteMatcher(["/connect(.*)", "/profile(.*)", "/missions(.*)"])
+const isOnboardingRoute = createRouteMatcher(["/onboarding"])
 
 export default clerkMiddleware(async (auth, req) => {
   const { sessionClaims, userId, isAuthenticated } = await auth()
@@ -24,6 +25,26 @@ export default clerkMiddleware(async (auth, req) => {
 
   const isAdminUser = metadata?.isAdmin || metadata?.role === "admin"
   const defaultManagementRoute = getDefaultManagementRoute(pageAccess, normalizedAdminRole, metadata?.assignedCompany)
+
+  console.log("RUN")
+  // Redirect logged-in users with neither publicMetadata nor a MongoDB record to onboarding
+  if (
+    userId &&
+    isAuthenticated &&
+    !metadata?.role &&
+    !isOnboardingRoute(req) &&
+    !req.nextUrl.pathname.startsWith("/api")
+  ) {
+    const checkUrl = new URL("/api/checkUser", req.url)
+    const res = await fetch(checkUrl, {
+      headers: { cookie: req.headers.get("cookie") ?? "" },
+    })
+    const { exists } = await res.json()
+    if (!exists) {
+      return NextResponse.redirect(new URL("/onboarding", req.url))
+    }
+  }
+
   if (!req.nextUrl.pathname.startsWith("/api") && !isManagementRoutes(req) && isAdminUser) {
     if (defaultManagementRoute !== req.nextUrl.pathname) {
       return NextResponse.redirect(new URL(defaultManagementRoute, req.url))

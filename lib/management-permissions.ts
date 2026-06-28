@@ -5,7 +5,7 @@ export type PageAccessSection = Record<
   PagePermission | boolean | null | undefined
 >
 
-export type PageAccess = Partial<Record<"manage" | "data" | "company", PageAccessSection>>
+export type PageAccess = Partial<Record<"manage" | "data" | "company" | "user-management", PageAccessSection>>
 
 export type ManagementSectionKey = keyof PageAccess
 
@@ -85,28 +85,12 @@ export const managementPageSections: Array<{
         iconKey: "chart",
       },
       {
-        key: "logo-loop",
-        title: "Logo Loop",
-        url: "/admin/logo-loop",
-        accessKeys: ["/logo-loop"],
-        section: "manage",
-        iconKey: "list",
-      },
-      {
-        key: "company",
-        title: "Companies",
-        url: "/admin/company",
-        accessKeys: ["/company"],
+        key: "campus-map",
+        title: "Campus Map",
+        url: "/admin/campus-map",
+        accessKeys: ["/campus-map"],
         section: "manage",
         iconKey: "building",
-      },
-      {
-        key: "sessions",
-        title: "Sessions",
-        url: "/admin/sessions",
-        accessKeys: ["/sessions"],
-        section: "manage",
-        iconKey: "calendar",
       },
       {
         key: "missions",
@@ -115,29 +99,27 @@ export const managementPageSections: Array<{
         accessKeys: ["/missions"],
         section: "manage",
         iconKey: "target",
-      },
+      }
+    ],
+  },
+  {
+    key: "user-management",
+    title: "User Management",
+    items: [
       {
         key: "user-missions",
         title: "User Missions",
         url: "/admin/user-missions",
         accessKeys: ["/user-missions"],
-        section: "manage",
+        section: "user-management",
         iconKey: "target",
-      },
-      {
-        key: "user-checkins",
-        title: "User Check-ins",
-        url: "/admin/user-checkins",
-        accessKeys: ["/user-checkins"],
-        section: "manage",
-        iconKey: "calendar",
       },
       {
         key: "admin-attendance",
         title: "Attendance",
         url: "/admin/attendance",
         accessKeys: ["/admin/attendance"],
-        section: "manage",
+        section: "user-management",
         iconKey: "calendar",
       },
       {
@@ -145,7 +127,7 @@ export const managementPageSections: Array<{
         title: "Users",
         url: "/admin/users",
         accessKeys: ["/users"],
-        section: "manage",
+        section: "user-management",
         iconKey: "users",
       },
     ],

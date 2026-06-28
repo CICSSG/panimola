@@ -14,6 +14,7 @@ function ThemeProvider({
       defaultTheme="dark"
       enableSystem
       disableTransitionOnChange
+
       {...props}
     >
       {/* <ThemeHotkey /> */}
@@ -69,20 +70,24 @@ function ThemeHotkey() {
   return null
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({
+  icon,
+  label,
+  className,
+}: {
+  icon?: React.ReactNode
+  label?: React.ReactNode
+  className?: string
+}) {
   const { resolvedTheme, setTheme } = useTheme()
 
   return (
     <button
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className="rounded-md border p-1"
+      className={className ?? "flex flex-row flex-nowrap items-center gap-2 text-nowrap"}
     >
-      {resolvedTheme === "dark" ? (
-        <SunMedium size={16} />
-      ) : (
-        <Moon size={16} />
-      )}
-
+      {resolvedTheme === "dark" ? <SunMedium size={16} /> : <Moon size={16} />}
+      {resolvedTheme === "dark" ? "Switch to Light" : "Switch to Dark"}
     </button>
   )
 }

@@ -3,7 +3,11 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { canAccessManagementPath, getDefaultManagementRoute, type PageAccess } from "@/lib/management-permissions"
+import {
+  canAccessManagementPath,
+  getDefaultManagementRoute,
+  type PageAccess,
+} from "@/lib/management-permissions"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { Toaster } from "sonner"
@@ -35,9 +39,20 @@ export default function RootLayout({
       return
     }
 
-    const canAccessCurrentPage = canAccessManagementPath(pathname, pageAccess, adminRole, metadata?.assignedCompany)
+    const canAccessCurrentPage = canAccessManagementPath(
+      pathname,
+      pageAccess,
+      adminRole,
+      metadata?.assignedCompany
+    )
     if (!canAccessCurrentPage) {
-      router.replace(getDefaultManagementRoute(pageAccess, adminRole, metadata?.assignedCompany))
+      router.replace(
+        getDefaultManagementRoute(
+          pageAccess,
+          adminRole,
+          metadata?.assignedCompany
+        )
+      )
     }
   }, [adminRole, pageAccess, pathname, router, user])
 
@@ -46,24 +61,28 @@ export default function RootLayout({
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="sidebar" userData={user} />
-      <SidebarInset>
-        <div className="fixed top-0 z-10 w-full border-b border-white/10 bg-background/95 backdrop-blur">
-          <SiteHeader />
-        </div>
-        <div className="flex w-full flex-col p-4 pt-16">
-          {children}
-          <Toaster />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <ThemeProvider>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="sidebar" userData={user} />
+        <SidebarInset>
+          <div className="flex min-h-full w-full flex-col">
+            <div className="fixed top-0 z-10 w-full border-b border-white/10 bg-background/95 pr-8 backdrop-blur">
+              <SiteHeader />
+            </div>
+            <div className="flex w-full flex-col p-4 pt-16 pb-8">
+              {children}
+              <Toaster />
+            </div>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </ThemeProvider>
   )
 }

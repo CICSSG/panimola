@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,8 +7,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
-import { CirclePlusIcon, MailIcon } from "lucide-react"
 import Link from "next/link"
 
 export function NavMain({
@@ -24,17 +23,18 @@ export function NavMain({
     }[]
   }
 }) {
+  const { open } = useSidebar()
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{data.title}</SidebarGroupLabel>
-      <SidebarGroupContent className="flex flex-col gap-2">
+      <SidebarGroupLabel className="text-nowrap truncate">{data.title}</SidebarGroupLabel>
+      <SidebarGroupContent className="flex flex-col gap-2 text-nowrap">
         <SidebarMenu>
           {data.items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} className="p-0">
+              <SidebarMenuButton tooltip={item.title} className={open ? "p-2" : ""}>
                 <Link
                   href={item.url}
-                  className="flex h-full w-full items-center gap-2 p-2"
+                  className="flex h-full w-full items-center gap-2 text-nowrap flex-nowrap"
                 >
                   {item.icon}
                   <span>{item.title}</span>

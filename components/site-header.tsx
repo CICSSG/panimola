@@ -23,8 +23,8 @@ export function SiteHeader() {
           }
           if (index === path.length - 1) {
             return (
-              <span key={index} className="text-sm font-medium">
-                {segment.charAt(0).toUpperCase() + segment.slice(1)}
+              <span key={index} className="text-sm font-medium capitalize">
+                {segment.replace(/-/g, " ")}
               </span>
             )
           } else {
@@ -32,18 +32,14 @@ export function SiteHeader() {
               <Link
                 key={index}
                 href={path.slice(0, index + 1).join("/")}
-                className="cursor-pointer text-sm text-muted-foreground hover:text-primary-foreground hover:underline"
+                className="cursor-pointer text-sm text-muted-foreground hover:text-primary-foreground hover:underline capitalize"
               >
-                {segment.charAt(0).toUpperCase() + segment.slice(1)} {">"}
+                {segment.replace(/-/g, " ")} {">"}
               </Link>
             )
           }
         })}
-        <Separator
-          orientation="vertical"
-          className="mx-2 ml-auto h-4 data-vertical:self-auto"
-        />
-        <ThemeToggle />
+        
       </div>
     </header>
   )

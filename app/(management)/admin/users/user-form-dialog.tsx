@@ -1,0 +1,551 @@
+"use client"
+
+import { useEffect, useState } from "react"
+
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { toast } from "sonner"
+import { Building2, X } from "lucide-react"
+
+import {
+  managementPageSections,
+  hasAnyManagementPageAccess,
+  type PageAccess,
+  type PageAccessSection,
+} from "./permissions"
+import { User } from "./types"
+import { getCompaniesForAssignment } from "../actions"
+
+type UserFormDialogProps = {
+  open: boolean
+  user?: User | null
+  mode: "create" | "edit"
+  onOpenChange: (open: boolean) => void
+  onSaved: () => void
+}
+
+type UserFormState = {
+  firstName: string
+  lastName: string
+  email: string
+  course: string
+  shortBio: string
+  resumeLink: string
+}
+
+type PermissionValue = "view" | "edit" | "false"
+type AdminRoleState = "superadmin" | "admin" | "company" | "none"
+type CompanyEntry = { id: string; name: string }
+
+function createEmptyAccess(): PageAccess {
+  return managementPageSections.reduce<PageAccess>((sectionAccumulator, section) => {
+    sectionAccumulator[section.key] = section.items.reduce<PageAccessSection>((pageAccumulator, page) => {
+      pageAccumulator[page.accessKeys[0] ?? page.url] = "false"
+      return pageAccumulator
+    }, {})
+    return sectionAccumulator
+  }, {})
+}
+
+function createCompanyAccess(): PageAccess {
+  return managementPageSections.reduce<PageAccess>((sectionAccumulator, section) => {
+    sectionAccumulator[section.key] = section.items.reduce<PageAccessSection>((pageAccumulator, page) => {
+      pageAccumulator[page.accessKeys[0] ?? page.url] = section.key === "company" ? "edit" : "false"
+      return pageAccumulator
+    }, {})
+    return sectionAccumulator
+  }, {})
+}
+
+const emptyForm = (): UserFormState => ({
+  firstName: "",
+  lastName: "",
+  email: "",
+  course: "",
+  shortBio: "",
+  resumeLink: "",
+})
+
+export default function UserFormDialog({ open, user, mode, onOpenChange, onSaved }: UserFormDialogProps) {
+  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState<UserFormState>(() => emptyForm())
+  const [role, setRole] = useState<"admin" | "user">("user")
+  const [adminRole, setAdminRole] = useState<AdminRoleState>("none")
+  const [pageAccess, setPageAccess] = useState<PageAccess>(() => createEmptyAccess())
+  const [errors, setErrors] = useState<string[]>([])
+  const [selectedCompanies, setSelectedCompanies] = useState<CompanyEntry[]>([])
+  const [companies, setCompanies] = useState<CompanyEntry[]>([])
+  const [loadingCompanies, setLoadingCompanies] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    setLoadingCompanies(true)
+    getCompaniesForAssignment()
+      .then((result) => {
+        if (result.success && result.data) setCompanies(result.data)
+      })
+      .finally(() => setLoadingCompanies(false))
+  }, [open])
+
+  useEffect(() => {
+    if (mode === "create") {
+      setForm(emptyForm())
+      setRole("user")
+      setAdminRole("none")
+      setPageAccess(createEmptyAccess())
+      setSelectedCompanies([])
+      return
+    }
+
+    const isCompanyAccount = Boolean(user?.assignedCompany)
+    setRole(user?.role === "admin" ? "admin" : "user")
+    setAdminRole(isCompanyAccount ? "company" : ((user?.adminRole as AdminRoleState) || "none"))
+
+    if (isCompanyAccount) {
+      setPageAccess(createCompanyAccess())
+      // Prefer the assignedCompanies array; fall back to the single legacy fields
+      if (Array.isArray(user?.assignedCompanies) && user.assignedCompanies.length > 0) {
+        setSelectedCompanies(user.assignedCompanies)
+      } else if (user?.assignedCompany) {
+        setSelectedCompanies([{ id: user.assignedCompany, name: user.companyName || "" }])
+      } else {
+        setSelectedCompanies([])
+      }
+    } else {
+      setSelectedCompanies([])
+      setPageAccess(() => {
+        const nextAccess = createEmptyAccess()
+        for (const section of managementPageSections) {
+          nextAccess[section.key] = {
+            ...nextAccess[section.key],
+            ...(user?.pageAccess?.[section.key] ?? {}),
+          }
+        }
+        return nextAccess
+      })
+    }
+
+    setForm({
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+      course: user?.course || "",
+      shortBio: user?.shortBio || "",
+      resumeLink: user?.resumeLink || "",
+    })
+  }, [mode, user, open])
+
+  const handleAdminRoleChange = (value: AdminRoleState) => {
+    setAdminRole(value)
+    if (value === "company") {
+      setPageAccess(createCompanyAccess())
+    } else {
+      setSelectedCompanies([])
+      setPageAccess(createEmptyAccess())
+    }
+  }
+
+  const toggleCompany = (company: CompanyEntry) => {
+    setSelectedCompanies((current) => {
+      const exists = current.some((c) => c.id === company.id)
+      return exists ? current.filter((c) => c.id !== company.id) : [...current, company]
+    })
+  }
+
+  const validateForm = () => {
+    const nextErrors: string[] = []
+
+    if (!form.firstName.trim()) nextErrors.push("First name is required")
+    if (!form.lastName.trim()) nextErrors.push("Last name is required")
+    if (!form.email.trim()) nextErrors.push("Email is required")
+
+    if (role === "admin" && adminRole === "none") {
+      nextErrors.push("Select an admin type")
+    }
+
+    if (role === "admin" && adminRole === "company" && selectedCompanies.length === 0) {
+      nextErrors.push("Select at least one company to assign")
+    }
+
+    if (role === "admin" && adminRole !== "company" && !hasAnyManagementPageAccess(pageAccess)) {
+      nextErrors.push("Grant at least one view or edit permission before saving an admin")
+    }
+
+    setErrors(nextErrors)
+    return nextErrors.length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!validateForm()) return
+
+    setSaving(true)
+    try {
+      const payload = {
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim().toLowerCase(),
+        course: form.course.trim(),
+        shortBio: form.shortBio.trim(),
+        resumeLink: form.resumeLink.trim(),
+      }
+
+      const isCompanyAccount = adminRole === "company"
+      const normalizedRole = role === "admin" ? "admin" : "user"
+      const normalizedAdminRole =
+        normalizedRole === "admin" ? (adminRole === "superadmin" ? "superadmin" : "admin") : null
+      const normalizedPageAccess =
+        normalizedRole === "admin" ? (isCompanyAccount ? createCompanyAccess() : { ...pageAccess }) : null
+
+      // Primary company (first selected) for backward-compat fields
+      const primaryCompany = isCompanyAccount ? (selectedCompanies[0] ?? null) : null
+      const assignedCompany = primaryCompany?.id ?? null
+      const companyId = assignedCompany
+      const companyName = primaryCompany?.name ?? null
+      const assignedCompanies = isCompanyAccount ? selectedCompanies : null
+
+      const response =
+        mode === "create"
+          ? await fetch("/api/createUser", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                value: payload,
+                role: normalizedRole,
+                adminRole: normalizedAdminRole,
+                isAdmin: normalizedRole === "admin",
+                pageAccess: normalizedPageAccess,
+                assignedCompany,
+                companyId,
+                companyName,
+                assignedCompanies,
+              }),
+            })
+          : await fetch(`/api/updateUser?id=${user?.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                clerkId: user?.clerkId,
+                role: normalizedRole === "user" ? null : normalizedRole,
+                adminRole: normalizedAdminRole,
+                isAdmin: normalizedRole === "admin",
+                pageAccess: normalizedPageAccess,
+                assignedCompany,
+                companyId,
+                companyName,
+                assignedCompanies,
+              }),
+            })
+
+      if (!response.ok) {
+        throw new Error(mode === "create" ? "Failed to create user" : "Failed to update user")
+      }
+
+      toast.success(mode === "create" ? "User created successfully" : "User updated successfully")
+      onOpenChange(false)
+      onSaved()
+    } catch (error) {
+      console.error(mode === "create" ? "Error creating user:" : "Error updating user:", error)
+      toast.error(mode === "create" ? "Failed to create user" : "Failed to update user")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl bg-primary/40">
+        <DialogHeader>
+          <DialogTitle>{mode === "create" ? "Create User Account" : "Edit User Permissions"}</DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
+          {errors.length > 0 && (
+            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3">
+              <div className="text-sm font-medium text-destructive">Please fix the following errors:</div>
+              <ul className="mt-2 space-y-1 text-xs text-destructive">
+                {errors.map((error, index) => (
+                  <li key={index}>• {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {mode === "create" ? (
+            <div className="space-y-4 rounded-lg border bg-muted/20 p-3">
+              <div className="text-sm font-medium">Account Details</div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">First Name</label>
+                  <Input
+                    value={form.firstName}
+                    onChange={(event) => setForm((current) => ({ ...current, firstName: event.target.value }))}
+                    placeholder="First name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Last Name</label>
+                  <Input
+                    value={form.lastName}
+                    onChange={(event) => setForm((current) => ({ ...current, lastName: event.target.value }))}
+                    placeholder="Last name"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Email</label>
+                <Input
+                  type="email"
+                  value={form.email}
+                  onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+                  placeholder="user@example.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Course</label>
+                <Input
+                  value={form.course}
+                  onChange={(event) => setForm((current) => ({ ...current, course: event.target.value }))}
+                  placeholder="Course or program"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Short Bio</label>
+                <textarea
+                  value={form.shortBio}
+                  onChange={(event) => setForm((current) => ({ ...current, shortBio: event.target.value }))}
+                  placeholder="Short bio"
+                  className="min-h-24 w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Resume Link</label>
+                <Input
+                  value={form.resumeLink}
+                  onChange={(event) => setForm((current) => ({ ...current, resumeLink: event.target.value }))}
+                  placeholder="https://..."
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3 rounded-lg border bg-muted/20 p-3">
+              <div className="text-sm font-medium">User Information</div>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="font-medium">Name:</span> {user?.firstName} {user?.lastName}
+                </div>
+                <div>
+                  <span className="font-medium">Email:</span> {user?.email}
+                </div>
+                <div>
+                  <span className="font-medium">Course:</span> {user?.course}
+                </div>
+                <div>
+                  <span className="font-medium">Clerk ID:</span>
+                  <code className="ml-2 text-xs text-muted-foreground">{user?.clerkId}</code>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-3 rounded-lg border bg-muted/20 p-3">
+            <div className="text-sm font-medium">User Role</div>
+            <RadioGroup value={role} onValueChange={(value: "admin" | "user") => setRole(value)}>
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 rounded-lg border bg-background p-3">
+                  <RadioGroupItem value="user" id="role-user" />
+                  <label htmlFor="role-user" className="flex flex-col cursor-pointer flex-1">
+                    <span className="text-sm font-medium">User</span>
+                    <span className="text-xs text-muted-foreground">
+                      Regular user with page access granted through permissions
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-3 rounded-lg border bg-background p-3">
+                  <RadioGroupItem value="admin" id="role-admin" />
+                  <label htmlFor="role-admin" className="flex flex-col cursor-pointer flex-1">
+                    <span className="text-sm font-medium">Admin Role</span>
+                    <span className="text-xs text-muted-foreground">
+                      Management access (select admin type below)
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {role === "admin" && (
+            <div className="space-y-3 rounded-lg border bg-muted/20 p-3">
+              <div className="text-sm font-medium">Admin Type</div>
+              <RadioGroup value={adminRole} onValueChange={(value: AdminRoleState) => handleAdminRoleChange(value)}>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 rounded-lg border bg-background p-3">
+                    <RadioGroupItem value="admin" id="admin-type-admin" />
+                    <label htmlFor="admin-type-admin" className="flex flex-col cursor-pointer flex-1">
+                      <span className="text-sm font-medium">Admin</span>
+                      <span className="text-xs text-muted-foreground">
+                        Can manage companies, sessions, missions, logo loop, and pages granted below
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center gap-3 rounded-lg border bg-background p-3">
+                    <RadioGroupItem value="superadmin" id="admin-type-superadmin" />
+                    <label htmlFor="admin-type-superadmin" className="flex flex-col cursor-pointer flex-1">
+                      <span className="text-sm font-medium">Super Admin</span>
+                      <span className="text-xs text-muted-foreground">
+                        Full access including user management and all features
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center gap-3 rounded-lg border bg-background p-3">
+                    <RadioGroupItem value="company" id="admin-type-company" />
+                    <label htmlFor="admin-type-company" className="flex flex-col cursor-pointer flex-1">
+                      <span className="text-sm font-medium flex items-center gap-1.5">
+                        <Building2 size={14} /> Company Account
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        Access limited to assigned company pages only
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
+          )}
+
+          {role === "admin" && adminRole === "company" && (
+            <div className="space-y-3 rounded-lg border bg-muted/20 p-3">
+              <div className="text-sm font-medium">Company Assignment</div>
+              <div className="text-xs text-muted-foreground">
+                Select one or more companies. This account will have edit access to /company pages for all assigned companies.
+              </div>
+
+              {selectedCompanies.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedCompanies.map((c) => (
+                    <span
+                      key={c.id}
+                      className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-700"
+                    >
+                      <Building2 size={10} />
+                      {c.name}
+                      <button
+                        type="button"
+                        onClick={() => toggleCompany(c)}
+                        className="ml-0.5 rounded-full hover:text-amber-900"
+                      >
+                        <X size={10} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {loadingCompanies ? (
+                <div className="text-sm text-muted-foreground">Loading companies...</div>
+              ) : companies.length === 0 ? (
+                <div className="text-sm text-muted-foreground">No companies found.</div>
+              ) : (
+                <div className="max-h-44 overflow-y-auto rounded-lg border bg-background">
+                  {companies.map((c) => {
+                    const isChecked = selectedCompanies.some((s) => s.id === c.id)
+                    return (
+                      <label
+                        key={c.id}
+                        className="flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm hover:bg-muted"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => toggleCompany(c)}
+                          className="h-4 w-4 rounded border accent-primary"
+                        />
+                        {c.name}
+                      </label>
+                    )
+                  })}
+                </div>
+              )}
+
+              <div className="rounded-lg border bg-background/60 p-3 space-y-1">
+                <div className="text-xs font-medium text-muted-foreground mb-1.5">Fixed page access for company accounts</div>
+                <div className="text-xs text-green-600">✓ /company/dashboard — Edit</div>
+                <div className="text-xs text-green-600">✓ /company/check-ins — Edit</div>
+                <div className="text-xs text-muted-foreground">All other management pages — No access</div>
+              </div>
+            </div>
+          )}
+
+          {role === "admin" && adminRole !== "company" && adminRole !== "none" && (
+            <div className="space-y-3 rounded-lg border bg-muted/20 p-3">
+              <div className="text-sm font-medium">Manage Page Access</div>
+              <div className="space-y-4">
+                {managementPageSections.map((section) => (
+                  <div key={section.key} className="space-y-3 rounded-lg border bg-background/60 p-3">
+                    <div className="text-sm font-medium">{section.title}</div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {section.items.map((page) => {
+                        const pageKey = page.accessKeys[0] ?? page.url
+                        return (
+                          <label key={pageKey} className="space-y-2 text-sm">
+                            <span className="font-medium">{page.title}</span>
+                            <select
+                              value={(pageAccess[section.key]?.[pageKey] as PermissionValue) || "false"}
+                              onChange={(event) =>
+                                setPageAccess((current) => ({
+                                  ...current,
+                                  [section.key]: {
+                                    ...(current[section.key] ?? {}),
+                                    [pageKey]: event.target.value as PermissionValue,
+                                  },
+                                }))
+                              }
+                              className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
+                            >
+                              <option value="false">No access</option>
+                              <option value="view">View</option>
+                              <option value="edit">Edit</option>
+                            </select>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                View allows access to the page. Edit allows access plus user changes.
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2 pt-4">
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="inline-flex items-center rounded-lg border px-3 py-2 text-sm hover:bg-muted"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="inline-flex items-center rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            >
+              {saving ? "Saving..." : mode === "create" ? "Create Account" : "Update Permissions"}
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
