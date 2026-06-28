@@ -1,10 +1,15 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
+import { clerkMiddleware, createRouteMatcher, clerkClient } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { canAccessManagementPath, getDefaultManagementRoute, type PageAccess } from "@/lib/management-permissions"
 
 const isManagementRoutes = createRouteMatcher(["/admin(.*)", "/data(.*)", "/company(.*)"])
 const isLoggedInRoute = createRouteMatcher(["/connect(.*)", "/profile(.*)", "/missions(.*)"])
+const isAuthRoute = createRouteMatcher(["/sign-in", "/sso-callback"])
 const isOnboardingRoute = createRouteMatcher(["/onboarding"])
+const isPublicApiRoute = createRouteMatcher(["/api/signout"])
+
+const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
+const ALLOWED_DOMAIN = "@dlsud.edu.ph"
 
 export default clerkMiddleware(async (auth, req) => {
   const { sessionClaims, userId, isAuthenticated } = await auth()
@@ -26,12 +31,34 @@ export default clerkMiddleware(async (auth, req) => {
   const isAdminUser = metadata?.isAdmin || metadata?.role === "admin"
   const defaultManagementRoute = getDefaultManagementRoute(pageAccess, normalizedAdminRole, metadata?.assignedCompany)
 
-  console.log("RUN")
+  // Redirect signed-in users away from auth routes
+  if (isAuthenticated && isAuthRoute(req)) {
+    return NextResponse.redirect(new URL("/", req.url))
+  }
+
+  // In production, sign out users whose email doesn't match the allowed domain
+  if (
+    IS_PRODUCTION &&
+    userId &&
+    isAuthenticated &&
+    !isAuthRoute(req) &&
+    !isPublicApiRoute(req) &&
+    !req.nextUrl.pathname.startsWith("/api")
+  ) {
+    const client = await clerkClient()
+    const user = await client.users.getUser(userId)
+    const email = user.primaryEmailAddress?.emailAddress ?? ""
+    if (!email.endsWith(ALLOWED_DOMAIN)) {
+      return NextResponse.redirect(new URL("/api/signout", req.url))
+    }
+  }
+
   // Redirect logged-in users with neither publicMetadata nor a MongoDB record to onboarding
   if (
     userId &&
     isAuthenticated &&
     !metadata?.role &&
+    !isAuthRoute(req) &&
     !isOnboardingRoute(req) &&
     !req.nextUrl.pathname.startsWith("/api")
   ) {

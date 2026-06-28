@@ -14,7 +14,7 @@ export async function GET() {
   const user = await db.collection("users").findOne({ clerkId: userId }, { projection: { _id: 1 } })
   // const user = await db.collection("users").find({}).toArray()
     
-  console.log("User exists:", user)
+  // console.log("User exists:", user)
 
   return NextResponse.json({ exists: !!user })
 }
