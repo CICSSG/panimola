@@ -1,9 +1,24 @@
-import { clerkMiddleware, createRouteMatcher, clerkClient } from "@clerk/nextjs/server"
+import {
+  clerkMiddleware,
+  createRouteMatcher,
+  clerkClient,
+} from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
-import { canAccessManagementPath, getDefaultManagementRoute, type PageAccess } from "@/lib/management-permissions"
+import {
+  canAccessManagementPath,
+  getDefaultManagementRoute,
+  type PageAccess,
+} from "@/lib/management-permissions"
 
-const isManagementRoutes = createRouteMatcher(["/admin(.*)", "/data(.*)", "/company(.*)"])
-const isLoggedInRoute = createRouteMatcher(["/connect(.*)", "/profile(.*)", "/missions(.*)"])
+const isManagementRoutes = createRouteMatcher([
+  "/admin(.*)",
+  "/data(.*)",
+])
+const isLoggedInRoute = createRouteMatcher([
+  "/connect(.*)",
+  "/profile(.*)",
+  "/missions(.*)",
+])
 const isAuthRoute = createRouteMatcher(["/sign-in", "/sso-callback"])
 const isOnboardingRoute = createRouteMatcher(["/onboarding"])
 
@@ -18,22 +33,26 @@ export default clerkMiddleware(async (auth, req) => {
         adminRole?: string
         role: "user" | "admin"
         pageAccess?: PageAccess | null
-        assignedCompany?: string | null
       }
     | undefined
 
-  const normalizedAdminRole = metadata?.adminRole === "superadmin" || metadata?.adminRole === "admin"
-    ? metadata.adminRole
-    : null
+  const normalizedAdminRole =
+    metadata?.adminRole === "superadmin" || metadata?.adminRole === "admin"
+      ? metadata.adminRole
+      : null
   const pageAccess = metadata?.pageAccess ?? undefined
 
   const isAdminUser = metadata?.isAdmin || metadata?.role === "admin"
-  const defaultManagementRoute = getDefaultManagementRoute(pageAccess, normalizedAdminRole, metadata?.assignedCompany)
+  const defaultManagementRoute = getDefaultManagementRoute(
+    pageAccess,
+    normalizedAdminRole,
+  )
 
   // Signed-in users on the domain error page stay there — they were kicked out
   // for using a non-dlsud account and must not be bounced to "/" (which would
   // re-trigger the domain check → signout loop).
-  const isSignInErrorPage = req.nextUrl.pathname === "/sign-in" && req.nextUrl.searchParams.has("error")
+  const isSignInErrorPage =
+    req.nextUrl.pathname === "/sign-in" && req.nextUrl.searchParams.has("error")
 
   // Redirect signed-in users away from all other auth routes.
   if (isAuthenticated && isAuthRoute(req) && !isSignInErrorPage) {
@@ -111,7 +130,11 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  if (!req.nextUrl.pathname.startsWith("/api") && !isManagementRoutes(req) && isAdminUser) {
+  if (
+    !req.nextUrl.pathname.startsWith("/api") &&
+    !isManagementRoutes(req) &&
+    isAdminUser
+  ) {
     if (defaultManagementRoute !== req.nextUrl.pathname) {
       return NextResponse.redirect(new URL(defaultManagementRoute, req.url))
     }
@@ -124,7 +147,7 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.redirect(new URL("/", req.url))
     }
 
-    if(metadata?.role === "user") {
+    if (metadata?.role === "user") {
       return NextResponse.redirect(new URL("/", req.url))
     }
 
@@ -132,7 +155,6 @@ export default clerkMiddleware(async (auth, req) => {
       req.nextUrl.pathname,
       pageAccess,
       normalizedAdminRole,
-      metadata?.assignedCompany,
     )
 
     if (!canAccessCurrentPage) {
@@ -148,11 +170,13 @@ export default clerkMiddleware(async (auth, req) => {
     if (!isAuthenticated) {
       const redirectUrl = `${req.nextUrl.pathname}${req.nextUrl.search}`
       return NextResponse.redirect(
-        new URL(`/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`, req.url)
+        new URL(
+          `/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`,
+          req.url
+        )
       )
     }
   }
-
 })
 
 export const config = {

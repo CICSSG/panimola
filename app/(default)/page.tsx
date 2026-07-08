@@ -1,132 +1,410 @@
 "use client"
-import { motion } from "framer-motion"
+import { useRef } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import GridBackground from "@/components/grid-background"
+import LogoLoop from "@/components/logo-loop"
 
-const blobs = [
-  { points: "20,10 180,0 200,80 190,190 10,200 0,100", fill: "#fde047", className: "absolute -top-8 -left-8 w-64", rotate: -6,  delay: 0    },
-  { points: "10,40 100,0 190,30 200,160 110,200 0,170", fill: "#f9a8d4", className: "absolute top-24 -right-10 w-48", rotate: 12, delay: 0.1  },
-  { points: "0,60 80,0 200,20 200,140 120,200 0,180",  fill: "#7dd3fc", className: "absolute bottom-16 -left-6 w-40", rotate: -6, delay: 0.2  },
-  { points: "40,0 160,10 200,100 150,200 50,195 0,110", fill: "#86efac", className: "absolute bottom-10 right-10 w-32", rotate: 3, delay: 0.15 },
-]
-
+const float = (duration: number, amplitude: number, delay = 0) => ({
+  animate: { y: [0, -amplitude, 0] },
+  transition: {
+    y: { duration, repeat: Infinity, ease: "easeInOut" as const, delay },
+  },
+})
 
 export default function Page() {
+  const heroRef = useRef<HTMLElement>(null)
+  const { scrollY } = useScroll()
+  const scrollYProgress = useTransform(scrollY, [0, 400], [0, 1])
+
+  // Stars fly outward from center on scroll
+  const starTLX = useTransform(scrollYProgress, [0, 1], [0, -120])
+  const starTLY = useTransform(scrollYProgress, [0, 1], [0, -80])
+  const starTLR = useTransform(scrollYProgress, [0, 1], [0, -60])
+
+  const starTRX = useTransform(scrollYProgress, [0, 1], [0, 120])
+  const starTRY = useTransform(scrollYProgress, [0, 1], [0, -80])
+  const starTRR = useTransform(scrollYProgress, [0, 1], [0, 60])
+
+  const starBLX = useTransform(scrollYProgress, [0, 1], [0, -150])
+  const starBLY = useTransform(scrollYProgress, [0, 1], [0, 250])
+  const starBLR = useTransform(scrollYProgress, [0, 1], [0, 58])
+
+  const starBRX = useTransform(scrollYProgress, [0, 1], [0, 120])
+  const starBRY = useTransform(scrollYProgress, [0, 1], [0, 80])
+  const starBRR = useTransform(scrollYProgress, [0, 1], [0, -60])
+
+  const pencilX = useTransform(scrollYProgress, [0, 1], [0, 100])
+  const pencilY = useTransform(scrollYProgress, [0, 1], [0, 80])
+  const pencilR = useTransform(scrollYProgress, [0, 1], [0, 30])
+
+  // Logo moves up and shrinks on scroll
+  const logoScrollY = useTransform(scrollYProgress, [0, 1], [0, -120])
+  const logoScale = useTransform(scrollYProgress, [0, 1], [1, 0.2])
+  const logoOpacity = useTransform(scrollYProgress, [0, 1], [1, 1])
+
+  // Buttons shrink + move up on scroll (same feel as logo)
+  const btnScrollY = useTransform(scrollYProgress, [0, 1], [0, -250])
+  const btnScale = useTransform(scrollYProgress, [0, 1], [1, 0.2])
+  const btnOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 1])
+
   return (
-    <div
-      className="relative min-h-svh w-full overflow-hidden bg-white"
-      style={{
-        backgroundImage: `
-          linear-gradient(rgba(0,0,0,0.07) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,0,0,0.07) 1px, transparent 1px)
-        `,
-        backgroundSize: "32px 32px",
-      }}
-    >
-      {/* Animated decorative blobs — hidden on very small screens to avoid covering content */}
-      {blobs.map(({ points, fill, className, rotate, delay }, i) => (
-        <motion.svg
-          key={i}
-          aria-hidden
-          viewBox="0 0 200 200"
-          className={`pointer-events-none hidden opacity-80 sm:block ${className}`}
-          initial={{ opacity: 0, scale: 0.6, rotate: rotate - 10 }}
-          animate={{ opacity: 0.8, scale: 1, rotate, y: [0, -10, 0] }}
+    <GridBackground className="min-h-svh w-full">
+      {/* Hero */}
+      <section
+        ref={heroRef}
+        className="relative flex flex-col items-center justify-center px-4 py-8"
+      >
+        {/* StarTL — scroll wrapper (position + scroll transforms) > float wrapper (idle bob) */}
+        <motion.div
+          className="pointer-events-none absolute"
+          style={{
+            top: "17%",
+            left: "12%",
+            x: starTLX,
+            y: starTLY,
+            rotate: starTLR,
+          }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{
-            opacity: { duration: 0.5, delay },
-            scale:   { duration: 0.6, delay, type: "spring", stiffness: 200, damping: 18 },
-            rotate:  { duration: 0.6, delay },
-            y: { duration: 4 + i * 0.7, repeat: Infinity, ease: "easeInOut", delay },
+            opacity: { duration: 0.4 },
+            scale: {
+              duration: 0.5,
+              type: "spring" as const,
+              stiffness: 200,
+              damping: 14,
+            },
           }}
         >
-          <polygon points={points} fill={fill} stroke="black" strokeWidth="5" />
-        </motion.svg>
-      ))}
-
-      {/* Hero */}
-      <div className="relative flex flex-col items-center justify-center px-6 pt-32 pb-20 text-center">
-        <motion.div
-          className="mb-6 inline-block -rotate-2 border-4 border-black bg-[#fde047] px-4 py-1 text-sm font-extrabold uppercase tracking-widest"
-          style={{ boxShadow: "4px 4px 0 black" }}
-          initial={{ opacity: 0, y: -16, rotate: -6 }}
-          animate={{ opacity: 1, y: 0, rotate: -2 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          DLSUD · CICS Student Government
+          <motion.img
+            src="/assets/StarTL.png"
+            alt=""
+            aria-hidden
+            style={{ width: "clamp(80px, 10vw, 130px)" }}
+            animate={{ y: 0, rotate: 0 }}
+            transition={{
+              y: { duration: 3.8, repeat: Infinity, ease: "easeInOut" },
+              rotate: { duration: 18, repeat: Infinity, ease: "linear" },
+            }}
+          />
         </motion.div>
 
-        <motion.h1
-          className="mb-4 text-5xl font-black uppercase leading-none tracking-tight text-black sm:text-6xl"
-          style={{ WebkitTextStroke: "2px black", paintOrder: "stroke fill" }}
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-        >
-          CICS
-          <br />
-          <span className="text-[#f9a8d4]" style={{ WebkitTextStroke: "2px black" }}>
-            Panimola
-          </span>
-        </motion.h1>
-
-        <motion.p
-          className="mb-10 max-w-sm text-base font-bold text-black"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.45 }}
-        >
-          Your student government hub for events, announcements, and everything CICS.
-        </motion.p>
-
+        {/* StarTR */}
         <motion.div
-          className="flex flex-wrap justify-center gap-4"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.55 }}
+          className="pointer-events-none absolute"
+          style={{
+            top: "-12%",
+            right: "21%",
+            zIndex: 15,
+            x: starTRX,
+            y: starTRY,
+            rotate: starTRR,
+          }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            opacity: { duration: 0.4, delay: 0.1 },
+            scale: {
+              duration: 0.5,
+              delay: 0.1,
+              type: "spring" as const,
+              stiffness: 200,
+              damping: 14,
+            },
+          }}
         >
-          <a
-            href="/events"
-            className="border-4 border-black bg-[#7dd3fc] px-8 py-3 text-base font-extrabold uppercase transition-transform hover:-translate-y-1 active:translate-y-0"
-            style={{ boxShadow: "4px 4px 0 black" }}
-          >
-            See Events
-          </a>
-          <a
-            href="/about"
-            className="border-4 border-black bg-white px-8 py-3 text-base font-extrabold uppercase transition-transform hover:-translate-y-1 active:translate-y-0"
-            style={{ boxShadow: "4px 4px 0 black" }}
-          >
-            About Us
-          </a>
+          <motion.img
+            src="/assets/StarTR.png"
+            alt=""
+            aria-hidden
+            style={{ width: "clamp(320px, 16vw, 340px)" }}
+            animate={{ y: 0, rotate: 0 }}
+            transition={{
+              y: {
+                duration: 4.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.3,
+              },
+              rotate: { duration: 22, repeat: Infinity, ease: "linear" },
+            }}
+          />
         </motion.div>
-      </div>
 
-      <div className="border-t-4 border-black" />
+        {/* StarBL */}
+        <motion.div
+          className="pointer-events-none absolute"
+          style={{
+            bottom: "-21%",
+            left: "-3%",
+            x: starBLX,
+            y: starBLY,
+            rotate: starBLR,
+          }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            opacity: { duration: 0.4, delay: 0.2 },
+            scale: {
+              duration: 0.5,
+              delay: 0.2,
+              type: "spring" as const,
+              stiffness: 200,
+              damping: 14,
+            },
+          }}
+        >
+          <motion.img
+            src="/assets/StarBL.png"
+            alt=""
+            aria-hidden
+            style={{ width: "clamp(380px, 25vw, 450px)" }}
+            animate={{ y: 0, rotate: 0 }}
+            transition={{
+              y: {
+                duration: 3.6,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.6,
+              },
+              rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+            }}
+          />
+        </motion.div>
 
-      {/* Feature cards */}
-      <div className="relative grid grid-cols-1 gap-0 sm:grid-cols-3">
-        {[
-          { label: "Events",        desc: "Check out upcoming CICS activities and orientations.", color: "#fde047", rotate: "-rotate-1", delay: 0.6  },
-          { label: "Announcements", desc: "Stay in the loop with the latest from your SG.",       color: "#f9a8d4", rotate: "rotate-0",  delay: 0.7  },
-          { label: "About CICS SG", desc: "Meet the people behind your student government.",      color: "#7dd3fc", rotate: "rotate-1",  delay: 0.8  },
-        ].map(({ label, desc, color, rotate, delay }) => (
+        {/* StarBR */}
+        <motion.div
+          className="pointer-events-none absolute"
+          style={{
+            bottom: "25%",
+            right: "5%",
+            x: starBRX,
+            y: starBRY,
+            rotate: starBRR,
+          }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            opacity: { duration: 0.4, delay: 0.15 },
+            scale: {
+              duration: 0.5,
+              delay: 0.15,
+              type: "spring" as const,
+              stiffness: 200,
+              damping: 14,
+            },
+          }}
+        >
+          <motion.img
+            src="/assets/StarBR.png"
+            alt=""
+            aria-hidden
+            style={{ width: "clamp(100px, 13vw, 190px)" }}
+            animate={{ y: 0, rotate: 0 }}
+            transition={{
+              y: {
+                duration: 4.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.2,
+              },
+              rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+            }}
+          />
+        </motion.div>
+
+        {/* Pencil */}
+        <motion.div
+          className="pointer-events-none absolute"
+          style={{
+            bottom: "29%",
+            right: "18%",
+            zIndex: 30,
+            x: pencilX,
+            y: pencilY,
+            rotate: pencilR,
+          }}
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            opacity: { duration: 0.5, delay: 0.5 },
+            scale: {
+              duration: 0.5,
+              delay: 0.5,
+              type: "spring" as const,
+              stiffness: 140,
+              damping: 14,
+            },
+          }}
+        >
+          <motion.img
+            src="/assets/Pencil.png"
+            alt=""
+            aria-hidden
+            style={{ width: "clamp(160px, 20vw, 300px)" }}
+            // {...float(4, 8, 0.4)}
+          />
+        </motion.div>
+
+        {/* TV + logo */}
+        <div className="relative flex w-full items-center justify-center">
+          {/* Logo — scroll wrapper holds scroll transforms, inner div floats */}
           <motion.div
-            key={label}
-            className="group relative flex flex-col gap-3 border-b-4 border-black p-8 last:border-b-0 sm:border-b-0 sm:border-r-4 sm:last:border-r-0 hover:z-10"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay }}
+            className="pointer-events-none absolute z-20"
+            style={{
+              width: "min(95vw, 900px)",
+              bottom: "38%",
+              y: logoScrollY,
+              scale: logoScale,
+              opacity: logoOpacity,
+            }}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              opacity: { duration: 0.5, delay: 0.35 },
+              scale: {
+                duration: 0.6,
+                delay: 0.35,
+                type: "spring" as const,
+                stiffness: 120,
+                damping: 20,
+              },
+            }}
           >
-            <div
-              className={`${rotate} w-fit border-4 border-black px-3 py-1 text-xl font-black uppercase transition-transform group-hover:-translate-y-1`}
-              style={{ background: color, boxShadow: "3px 3px 0 black" }}
-            >
-              {label}
-            </div>
-            <p className="text-sm font-semibold text-black">{desc}</p>
+            <motion.img
+              src="/assets/Logo and Title.png"
+              alt="Panimola CICSCovery 2026"
+              style={{ width: "100%" }}
+              // {...float(4.8, 10, 0.6)}
+            />
           </motion.div>
-        ))}
+
+          {/* TV — floats, unaffected by scroll */}
+          <motion.img
+            src="/assets/TV.png"
+            alt="Retro TV"
+            className="relative z-10 w-[min(92vw,820px)]"
+            initial={{ opacity: 0, y: 0, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{
+              opacity: { duration: 0.5, delay: 0.2 },
+              scale: {
+                duration: 0.6,
+                delay: 0.2,
+                type: "spring" as const,
+                stiffness: 140,
+                damping: 18,
+              },
+            }}
+          />
+
+          <motion.div className="absolute bottom-[30%] z-30 flex -translate-x-2 gap-6" style={{ y: btnScrollY, scale: btnScale, opacity: btnOpacity }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }}>
+            <button
+              className="rotate-5 rounded-none border-2 border-black bg-[#fc7646] px-4 py-2 font-blackhansans text-2xl text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none"
+              style={{ boxShadow: "6px 6px 0 black" }}
+            >
+              <div className="-rotate-2">Schedule</div>
+            </button>
+            <button
+              className="translate-y-5 -rotate-5 rounded-none border-2 border-black bg-[#fef085] px-4 py-2 font-blackhansans text-2xl text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none"
+              style={{ boxShadow: "6px 6px 0 black" }}
+            >
+              <div className="-rotate-2">Register</div>
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Logo / partner loop */}
+      <div className="relative mt-20">
+        <div className="absolute top-5 h-[90%] w-full bg-white" />
+        <LogoLoop
+          className="relative z-2 py-3 outline-4 outline-black"
+          bgColor="#95cf56"
+          textColor="#fef085"
+          gap={64}
+          speed={200}
+          rotation={-2}
+          pauseOnHover={false}
+          logoHeight={48}
+          items={[
+            {
+              type: "text",
+              content: "ABOUT",
+              className:
+                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+            },
+          ]}
+        />
+        <LogoLoop
+          className="absolute -top-12 z-1 py-3 outline-4 outline-black"
+          bgColor="#fc7646"
+          textColor="#fef085"
+          gap={64}
+          reverse
+          speed={200}
+          rotation={2}
+          pauseOnHover={false}
+          logoHeight={48}
+          items={[
+            {
+              type: "text",
+              content: "ABOUT",
+              className:
+                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+            },
+          ]}
+        />
       </div>
+      {/* What's PANIMOLA section */}
+      <section className="relative bg-white px-8 py-20 md:px-16 lg:px-24">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-12 md:flex-row md:items-start">
+          {/* Left — heading + body */}
+          <div className="min-w-0 flex-1">
+            <div
+              className="mb-6 inline-block border-4 border-black bg-[#fde047] px-4 py-2"
+              style={{ boxShadow: "4px 4px 0 black" }}
+            >
+              <h2 className="font-blackhansans text-2xl font-extrabold uppercase">
+                What's PANIMOLA
+              </h2>
+            </div>
+            <p className="text-base leading-relaxed text-gray-700">
+              Lorem ipsum dolor sit amet consectetur. Arcu id hac sagittis diam
+              in. Pretium pharetra non velit vitae eget phasellus viverra. Augue
+              amet habitant a commodo odio. Quam curabitur nec augue lectus
+              tellus. Tellus condimentum senectus mattis netus eget vel tellus
+              nibh. Amet semper eros urna lorem erat tempor amet natoque netus.
+            </p>
+          </div>
+
+          {/* Right — retro window image placeholder */}
+          <div
+            className="w-full max-w-lg min-w-0 flex-1"
+            style={{ transform: "rotate(2deg)" }}
+          >
+            {/* Window title bar */}
+            <div className="flex items-center justify-between border-4 border-black bg-[#95cf56] px-3 py-2">
+              <span className="font-blackhansans text-sm font-bold">
+                &lt;image&gt;
+              </span>
+              <span className="border-2 border-black bg-white px-2 py-0.5 text-xs leading-none font-bold">
+                ✕
+              </span>
+            </div>
+            {/* Image area */}
+            <div className="flex aspect-4/3 items-center justify-center border-4 border-t-0 border-black bg-gray-200">
+              <span className="text-lg font-bold text-gray-400">
+                [image placeholder]
+              </span>
+            </div>
+            {/* Shadow tab at bottom */}
+            <div className="ml-2 h-3 border-4 border-t-0 border-black bg-white" />
+          </div>
+        </div>
+      </section>
 
       <div className="border-t-4 border-black" />
-    </div>
+    </GridBackground>
   )
 }

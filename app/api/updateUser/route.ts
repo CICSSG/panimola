@@ -13,10 +13,6 @@ export async function PUT(req: Request) {
       isAdmin,
       pageAccess,
       update,
-      assignedCompany,
-      companyId,
-      companyName,
-      assignedCompanies,
     } = body
 
     const { searchParams } = new URL(req.url)
@@ -26,7 +22,7 @@ export async function PUT(req: Request) {
     const db = client.db(process.env.MONGODB_DATABASE)
     const usersCollection = db.collection("users")
 
-    if (role === "admin" && !hasAnyManagementPageAccess(pageAccess as PageAccess | undefined)) {
+    if (role === "admin" && adminRole !== "superadmin" && !hasAnyManagementPageAccess(pageAccess as PageAccess | undefined)) {
       return new Response(
         JSON.stringify({ success: false, message: "At least one view or edit permission is required for admin accounts" }),
         { status: 400 }
@@ -87,10 +83,6 @@ export async function PUT(req: Request) {
           adminRole: role === "admin" ? adminRole || "admin" : null,
           isAdmin: role === "admin",
           pageAccess: role === "admin" ? buildExplicitPageAccess(pageAccess as PageAccess | undefined) : null,
-          assignedCompany: assignedCompany ?? null,
-          companyId: companyId ?? null,
-          companyName: companyName ?? null,
-          assignedCompanies: Array.isArray(assignedCompanies) ? assignedCompanies : null,
         },
       }
     )
@@ -102,19 +94,11 @@ export async function PUT(req: Request) {
         role: string | null
         adminRole: string | null
         pageAccess: unknown
-        assignedCompany: string | null
-        companyId: string | null
-        companyName: string | null
-        assignedCompanies: Array<{ id: string; name: string }> | null
       } = {
         isAdmin: role === "admin",
         role: null,
         adminRole: null,
         pageAccess: role === "admin" ? buildExplicitPageAccess(pageAccess as PageAccess | undefined) : null,
-        assignedCompany: assignedCompany ?? null,
-        companyId: companyId ?? null,
-        companyName: companyName ?? null,
-        assignedCompanies: Array.isArray(assignedCompanies) ? assignedCompanies : null,
       }
 
       if (role === "admin") {

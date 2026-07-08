@@ -15,21 +15,24 @@ function SSOHandler() {
   const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/"
 
   useEffect(() => {
-    clerk.handleRedirectCallback({
-      signInFallbackRedirectUrl: redirectCallbackUrl,
-      signUpFallbackRedirectUrl: redirectCallbackUrl,
-    }).then(async () => {
-      if (!IS_PRODUCTION) return
+    clerk
+      .handleRedirectCallback({
+        signInFallbackRedirectUrl: redirectCallbackUrl,
+        signUpFallbackRedirectUrl: redirectCallbackUrl,
+      })
+      .then(async () => {
+        if (!IS_PRODUCTION) return
 
-      // After session is set, check the primary email domain
-      const email = clerk.user?.primaryEmailAddress?.emailAddress ?? ""
-      if (!email.endsWith(ALLOWED_DOMAIN)) {
-        await clerk.signOut()
-        router.replace(`/sign-in?error=domain`)
-      }
-    }).catch(() => {
-      router.replace("/sign-in")
-    })
+        // After session is set, check the primary email domain
+        const email = clerk.user?.primaryEmailAddress?.emailAddress ?? ""
+        if (!email.endsWith(ALLOWED_DOMAIN)) {
+          await clerk.signOut()
+          router.replace(`/sign-in?error=domain`)
+        }
+      })
+      .catch(() => {
+        router.replace("/sign-in")
+      })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

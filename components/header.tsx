@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { UserButton, useUser } from "@clerk/nextjs"
 import { Menu } from "lucide-react"
 import { useSidebar } from "./sidebar-context"
+import Image from "next/image";
 
 export default function Header() {
   const { isSignedIn, isLoaded, user } = useUser()
@@ -13,13 +14,13 @@ export default function Header() {
     <div className="fixed top-0 left-0 z-999 flex h-24 w-full items-center justify-between border-b-4 border-black bg-white">
       {/* Logo */}
       <Link href="/" className="flex min-w-0 items-center gap-2 px-4 sm:gap-3 sm:px-6">
-        <span
-          className="-rotate-1 shrink-0 border-4 border-black bg-[#fde047] px-2 py-1 text-base font-black uppercase tracking-tight sm:px-3 sm:text-xl"
-          style={{ boxShadow: "3px 3px 0 black" }}
-        >
-          CICS
-        </span>
-        <span className="truncate text-base font-black uppercase tracking-tight sm:text-xl">Panimola</span>
+        <Image
+          src="/assets/LOGO.png"
+          alt="Logo"
+          width={180}
+          height={80}
+          className="object-cover"
+        />
       </Link>
 
       {/* Right side */}
@@ -38,10 +39,10 @@ export default function Header() {
           ) : (
             <Link
               href="/sign-in"
-              className="border-4 border-black bg-white px-4 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5"
+              className="border-4 border-black bg-accent px-4 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5 rotate-4"
               style={{ boxShadow: "3px 3px 0 black" }}
             >
-              Sign In
+              <div className="-rotate-4 text-white [-webkit-text-stroke:0.5px_black]">Login</div>
             </Link>
           )}
         </div>

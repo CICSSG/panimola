@@ -6,17 +6,15 @@ export type User = {
   firstName: string
   lastName: string
   email: string
-  course: string
-  shortBio: string
-  resumeLink: string
+  cys: string
+  studentNumber?: string | null
+  facebookLink?: string | null
+  shortBio?: string | null
+  resumeLink?: string | null
   createdAt: string
   updatedAt: string
   role?: "admin" | "user" | null
   adminRole?: "superadmin" | "admin" | null
   isAdmin?: boolean
   pageAccess?: PageAccess | null
-  assignedCompany?: string | null
-  companyId?: string | null
-  companyName?: string | null
-  assignedCompanies?: Array<{ id: string; name: string }> | null
 }

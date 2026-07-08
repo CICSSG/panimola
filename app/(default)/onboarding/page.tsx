@@ -6,7 +6,11 @@ import { motion } from "framer-motion"
 import { LogOut } from "lucide-react"
 
 function Field({
-  id, label, hint, required, children,
+  id,
+  label,
+  hint,
+  required,
+  children,
 }: {
   id?: string
   label: string
@@ -16,9 +20,16 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-extrabold uppercase tracking-wide">
+      <label
+        htmlFor={id}
+        className="text-sm font-extrabold tracking-wide uppercase"
+      >
         {label}
-        {hint && <span className="ml-1.5 text-xs font-semibold normal-case tracking-normal text-black/40">{hint}</span>}
+        {hint && (
+          <span className="ml-1.5 text-xs font-semibold tracking-normal text-black/40 normal-case">
+            {hint}
+          </span>
+        )}
         {required && <span className="ml-1 text-red-500">*</span>}
       </label>
       {children}
@@ -52,7 +63,14 @@ export default function OnboardingPage() {
     const res = await fetch("/api/onboard", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName, lastName, email, cys, studentNumber, facebookLink }),
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        cys,
+        studentNumber,
+        facebookLink,
+      }),
     })
 
     if (res.ok) {
@@ -67,7 +85,7 @@ export default function OnboardingPage() {
 
   return (
     <div
-      className="relative flex min-h-svh items-center justify-center overflow-hidden p-4 sm:p-6 -mt-8"
+      className="relative -mt-8 flex min-h-svh items-center justify-center overflow-hidden p-4 sm:p-6"
       style={{
         backgroundImage: `
           linear-gradient(rgba(0,0,0,0.07) 1px, transparent 1px),
@@ -77,15 +95,41 @@ export default function OnboardingPage() {
       }}
     >
       {/* Blobs */}
-      <motion.svg aria-hidden viewBox="0 0 200 200" className="pointer-events-none absolute top-10 -left-8 w-48 opacity-60"
-        initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 0.6, scale: 1, y: [0, -8, 0] }}
-        transition={{ scale: { duration: 0.5, type: "spring" }, y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" } }}>
-        <polygon points="20,10 180,0 200,80 190,190 10,200 0,100" fill="#86efac" stroke="black" strokeWidth="5" />
+      <motion.svg
+        aria-hidden
+        viewBox="0 0 200 200"
+        className="pointer-events-none absolute top-10 -left-8 w-48 opacity-60"
+        initial={{ opacity: 0, scale: 0.7 }}
+        animate={{ opacity: 0.6, scale: 1, y: [0, -8, 0] }}
+        transition={{
+          scale: { duration: 0.5, type: "spring" },
+          y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+        }}
+      >
+        <polygon
+          points="20,10 180,0 200,80 190,190 10,200 0,100"
+          fill="#86efac"
+          stroke="black"
+          strokeWidth="5"
+        />
       </motion.svg>
-      <motion.svg aria-hidden viewBox="0 0 200 200" className="pointer-events-none absolute bottom-0 right-0 w-44 opacity-60"
-        initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 0.6, scale: 1, y: [0, -10, 0] }}
-        transition={{ scale: { duration: 0.5, delay: 0.1, type: "spring" }, y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }}>
-        <polygon points="10,40 100,0 190,30 200,160 110,200 0,170" fill="#7dd3fc" stroke="black" strokeWidth="5" />
+      <motion.svg
+        aria-hidden
+        viewBox="0 0 200 200"
+        className="pointer-events-none absolute right-0 bottom-0 w-44 opacity-60"
+        initial={{ opacity: 0, scale: 0.7 }}
+        animate={{ opacity: 0.6, scale: 1, y: [0, -10, 0] }}
+        transition={{
+          scale: { duration: 0.5, delay: 0.1, type: "spring" },
+          y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.8 },
+        }}
+      >
+        <polygon
+          points="10,40 100,0 190,30 200,160 110,200 0,170"
+          fill="#7dd3fc"
+          stroke="black"
+          strokeWidth="5"
+        />
       </motion.svg>
 
       {/* Card */}
@@ -98,17 +142,21 @@ export default function OnboardingPage() {
       >
         {/* Header stripe */}
         <div className="border-b-4 border-black bg-[#f9a8d4] px-6 py-5">
-          <div className="mb-1 text-xs font-extrabold uppercase tracking-widest text-black/50">Almost there</div>
-          <h1 className="text-3xl font-black uppercase leading-none">
+          <div className="mb-1 text-xs font-extrabold tracking-widest text-black/50 uppercase">
+            Almost there
+          </div>
+          <h1 className="text-3xl leading-none font-black uppercase">
             Welcome{firstName ? `, ${firstName}` : ""}!
           </h1>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 px-6 py-7">
-          <p className="text-sm font-bold text-black/50">Complete your profile to continue.</p>
+          <p className="text-sm font-bold text-black/50">
+            Complete your profile to continue.
+          </p>
 
           {/* Read-only from Clerk */}
-          <div className="grid grid-cols-1 gap-4 xs:grid-cols-2 sm:grid-cols-2">
+          <div className="xs:grid-cols-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="First Name" required>
               <input className={inputClass} value={firstName} disabled />
             </Field>
@@ -143,7 +191,8 @@ export default function OnboardingPage() {
               className={inputClass}
               value={studentNumber}
               onChange={(e) => {
-                if (/^\d{0,9}$/.test(e.target.value)) setStudentNumber(e.target.value)
+                if (/^\d{0,9}$/.test(e.target.value))
+                  setStudentNumber(e.target.value)
               }}
               placeholder="202612345"
               maxLength={9}
@@ -163,7 +212,10 @@ export default function OnboardingPage() {
           </Field>
 
           {error && (
-            <div className="border-4 border-black bg-red-100 px-4 py-3 text-sm font-bold text-red-800" style={{ boxShadow: "3px 3px 0 black" }}>
+            <div
+              className="border-4 border-black bg-red-100 px-4 py-3 text-sm font-bold text-red-800"
+              style={{ boxShadow: "3px 3px 0 black" }}
+            >
               {error}
             </div>
           )}

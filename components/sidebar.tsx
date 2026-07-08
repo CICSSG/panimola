@@ -2,66 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { useSidebar } from "./sidebar-context"
-
-const SHAPES = {
-  splat: "10,4 90,0 198,8 200,40 195,54 100,56 8,52 0,30 4,12",
-  ribbon: "0,10 60,2 200,6 196,46 140,54 0,48",
-  chevron: "0,4 180,0 200,28 178,56 0,52 18,28",
-}
-
-// Reusable dot-pattern def — each sticker SVG references this by id
-function DotPattern({ id, color }: { id: string; color: string }) {
-  return (
-    <defs>
-      <pattern id={id} patternUnits="userSpaceOnUse" width="6" height="6">
-        <circle cx="3" cy="3" r="1.2" fill={color} />
-      </pattern>
-    </defs>
-  )
-}
-
-function NavItem({
-  href,
-  label,
-  fill,
-  shape = "splat",
-}: {
-  href: string
-  label: string
-  fill: string
-  shape?: keyof typeof SHAPES
-}) {
-  const patternId = `dots-${label.toLowerCase()}`
-  // Darken the fill slightly for the dot overlay so dots are visible but subtle
-  return (
-    <motion.a
-      href={href}
-      className="relative flex items-center px-4 py-3 text-lg font-extrabold"
-      initial="rest"
-      whileHover="hover"
-      animate="rest"
-    >
-      <motion.svg
-        aria-hidden
-        viewBox="0 0 200 56"
-        preserveAspectRatio="none"
-        className="pointer-events-none absolute inset-0 h-full w-full"
-        variants={{
-          rest:  { scale: 0, rotate: -4, opacity: 0 },
-          hover: { scale: 1, rotate: -2, opacity: 1 },
-        }}
-        transition={{ type: "spring", stiffness: 400, damping: 22 }}
-      >
-        <DotPattern id={patternId} color="rgba(0,0,0,0.18)" />
-        {/* base fill */}
-        <polygon points={SHAPES[shape]} fill={fill} stroke="black" strokeWidth="3" />
-        {/* dot texture overlay clipped to same shape */}
-        <polygon points={SHAPES[shape]} fill={`url(#${patternId})`} />
-      </motion.svg>
-      <span className="relative text-center w-full">{label}</span>
-    </motion.a>
-  )
-}
+import StickerButton from "./sticker-button"
 
 export default function Sidebar() {
   const { isOpen, close } = useSidebar()
@@ -89,44 +30,38 @@ export default function Sidebar() {
           >
             <div className="flex items-center justify-between border-b-4 border-black p-7">
               <span className="text-xl font-extrabold">Menu</span>
-              <motion.button
+              <StickerButton
                 onClick={close}
-                className="relative flex items-center justify-center p-2"
-                initial="rest"
-                whileHover="hover"
-                animate="rest"
+                className="text-sm"
+                fill="#fca5a5"
+                shape="splat"
+                aria-label="Close menu"
               >
-                <motion.svg
-                  aria-hidden
-                  viewBox="0 0 56 56"
-                  className="pointer-events-none absolute inset-0 h-full w-full"
-                  variants={{
-                    rest:  { scale: 0, rotate: 10, opacity: 0 },
-                    hover: { scale: 1, rotate: 6,  opacity: 1 },
-                  }}
-                  transition={{ type: "spring", stiffness: 400, damping: 22 }}
-                >
-                  <DotPattern id="dots-close" color="rgba(0,0,0,0.18)" />
-                  <polygon points="4,10 28,2 52,10 54,28 50,48 28,54 6,50 2,28" fill="#fca5a5" stroke="black" strokeWidth="3" />
-                  <polygon points="4,10 28,2 52,10 54,28 50,48 28,54 6,50 2,28" fill="url(#dots-close)" />
-                </motion.svg>
-                <X className="relative size-5" />
-              </motion.button>
+                <X className="size-5" />
+              </StickerButton>
             </div>
             <nav className="flex flex-col gap-1 p-4">
-              <NavItem href="/" label="Home" fill="#fde047" shape="splat" />
-              <NavItem
+              <StickerButton
+                as="a"
+                href="/"
+                className="w-full px-8 py-4 text-lg"
+              >
+                Home
+              </StickerButton>
+              <StickerButton
+                as="a"
                 href="/events"
-                label="Events"
-                fill="#f9a8d4"
-                shape="ribbon"
-              />
-              <NavItem
+                className="w-full px-8 py-4 text-lg"
+              >
+                Events
+              </StickerButton>
+              <StickerButton
+                as="a"
                 href="/about"
-                label="About"
-                fill="#7dd3fc"
-                shape="chevron"
-              />
+                className="w-full px-8 py-4 text-lg"
+              >
+                About
+              </StickerButton>
             </nav>
           </motion.div>
         </>

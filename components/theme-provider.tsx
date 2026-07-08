@@ -9,12 +9,7 @@ function ThemeProvider({
   ...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
-    <NextThemesProvider
-      attribute="class"
-      disableTransitionOnChange
-
-      {...props}
-    >
+    <NextThemesProvider attribute="class" disableTransitionOnChange {...props}>
       {/* <ThemeHotkey /> */}
       {children}
     </NextThemesProvider>
@@ -82,7 +77,10 @@ export function ThemeToggle({
   return (
     <button
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className={className ?? "flex flex-row flex-nowrap items-center gap-2 text-nowrap w-full"}
+      className={
+        className ??
+        "flex w-full flex-row flex-nowrap items-center gap-2 text-nowrap"
+      }
     >
       {resolvedTheme === "dark" ? <SunMedium size={16} /> : <Moon size={16} />}
       {resolvedTheme === "dark" ? "Switch to Light" : "Switch to Dark"}

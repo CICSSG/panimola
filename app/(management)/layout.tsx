@@ -43,14 +43,12 @@ export default function RootLayout({
       pathname,
       pageAccess,
       adminRole,
-      metadata?.assignedCompany
     )
     if (!canAccessCurrentPage) {
       router.replace(
         getDefaultManagementRoute(
           pageAccess,
           adminRole,
-          metadata?.assignedCompany
         )
       )
     }

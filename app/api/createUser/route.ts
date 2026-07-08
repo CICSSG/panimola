@@ -12,12 +12,8 @@ export async function POST(req: Request) {
   const adminRole = request.adminRole || null
   const isAdmin = role === "admin"
   const pageAccess = role === "admin" ? buildExplicitPageAccess(request.pageAccess || null) : null
-  const assignedCompany = request.assignedCompany ?? null
-  const companyId = request.companyId ?? null
-  const companyName = request.companyName ?? null
-  const assignedCompanies = Array.isArray(request.assignedCompanies) ? request.assignedCompanies : null
 
-  if (role === "admin" && !hasAnyManagementPageAccess(pageAccess as PageAccess | undefined)) {
+  if (role === "admin" && adminRole !== "superadmin" && !hasAnyManagementPageAccess(pageAccess as PageAccess | undefined)) {
     return NextResponse.json(
       { message: "At least one view or edit permission is required for admin accounts" },
       { status: 400 }
@@ -40,10 +36,6 @@ export async function POST(req: Request) {
       adminRole,
       isAdmin,
       pageAccess,
-      assignedCompany,
-      companyId,
-      companyName,
-      assignedCompanies,
     },
   }).catch((error: unknown) => {
     console.error("Error creating user in Clerk:", error)
@@ -66,10 +58,6 @@ export async function POST(req: Request) {
     adminRole,
     isAdmin,
     pageAccess,
-    assignedCompany,
-    companyId,
-    companyName,
-    assignedCompanies,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }).catch((error) => {

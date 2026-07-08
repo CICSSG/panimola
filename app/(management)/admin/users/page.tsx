@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import * as XLSX from "xlsx"
-import { Download, RefreshCw, PencilLine, Trash2, Shield, Users2, Building2 } from "lucide-react"
+import { Download, RefreshCw, PencilLine, Trash2, Shield, Users2 } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { getCollectionData, inspectOrCreateMongoUserByEmail } from "../actions"
@@ -86,9 +86,11 @@ export default function UsersList() {
     firstName?: string
     lastName?: string
     email?: string
-    course?: string
-    shortBio?: string
-    resumeLink?: string
+    cys?: string
+    studentNumber?: string | null
+    facebookLink?: string | null
+    shortBio?: string | null
+    resumeLink?: string | null
     createdAt?: string
     updatedAt?: string
     role?: "admin" | "user" | null
@@ -97,11 +99,8 @@ export default function UsersList() {
     pageAccess?: {
       manage?: PageAccessSection
       data?: PageAccessSection
+      "user-management"?: PageAccessSection
     } | null
-    assignedCompany?: string | null
-    companyId?: string | null
-    companyName?: string | null
-    assignedCompanies?: Array<{ id: string; name: string }> | null
   }
 
   const getData = useCallback(() => {
@@ -114,19 +113,17 @@ export default function UsersList() {
             firstName: item.firstName || "",
             lastName: item.lastName || "",
             email: item.email || "",
-            course: item.course || "",
-            shortBio: item.shortBio || "",
-            resumeLink: item.resumeLink || "",
+            cys: item.cys || "",
+            studentNumber: item.studentNumber || null,
+            facebookLink: item.facebookLink || null,
+            shortBio: item.shortBio || null,
+            resumeLink: item.resumeLink || null,
             createdAt: item.createdAt || "",
             updatedAt: item.updatedAt || "",
             role: item.role || null,
             adminRole: item.adminRole || null,
             isAdmin: item.isAdmin || false,
             pageAccess: item.pageAccess || null,
-            assignedCompany: item.assignedCompany || null,
-            companyId: item.companyId || null,
-            companyName: item.companyName || null,
-            assignedCompanies: Array.isArray(item.assignedCompanies) ? item.assignedCompanies : null,
           }))
 
           setUsers(mappedUsers)
@@ -160,7 +157,7 @@ export default function UsersList() {
       user.firstName.toLowerCase().includes(normalizedSearch) ||
       user.lastName.toLowerCase().includes(normalizedSearch) ||
       user.email.toLowerCase().includes(normalizedSearch) ||
-      user.course.toLowerCase().includes(normalizedSearch)
+      user.cys.toLowerCase().includes(normalizedSearch)
 
     const userDomain = user.email.split("@")[1]
     const activeDomains = Object.entries(domainFilters)
@@ -208,7 +205,7 @@ export default function UsersList() {
         filteredUsers.map((user) => ({
           Name: `${user.firstName} ${user.lastName}`.trim(),
           Email: user.email,
-          Course: user.course,
+          Course: user.cys,
           Role: user.role === "admin" ? (user.adminRole === "superadmin" ? "Super Admin" : "Admin") : "User",
           "User ID": user.id,
           "Clerk ID": user.clerkId || "",
@@ -399,7 +396,7 @@ export default function UsersList() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Course</TableHead>
+              <TableHead>CYS</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Joined</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -422,7 +419,7 @@ export default function UsersList() {
                   </TableCell>
                   <TableCell>
                     <div className="max-w-60 text-sm text-muted-foreground line-clamp-2">
-                      {user.course}
+                      {user.cys}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -432,26 +429,10 @@ export default function UsersList() {
                           <Shield size={12} /> Super Admin
                         </span>
                       )}
-                      {user.role === "admin" && user.adminRole === "admin" && !user.assignedCompany && (
+                      {user.role === "admin" && user.adminRole === "admin" && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive">
                           <Shield size={12} /> Admin
                         </span>
-                      )}
-                      {user.role === "admin" && user.adminRole === "admin" && user.assignedCompany && (
-                        <>
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600">
-                            <Building2 size={12} /> Company
-                          </span>
-                          {user.assignedCompanies && user.assignedCompanies.length > 0 ? (
-                            user.assignedCompanies.map((c) => (
-                              <span key={c.id} className="text-xs text-muted-foreground">
-                                {c.name}
-                              </span>
-                            ))
-                          ) : user.companyName ? (
-                            <span className="text-xs text-muted-foreground">{user.companyName}</span>
-                          ) : null}
-                        </>
                       )}
                       {user.role !== "admin" && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-600">
