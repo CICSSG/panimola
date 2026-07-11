@@ -448,7 +448,6 @@ export default function Page() {
         </div>
       </section>
 
-      <div className="border-t-4 border-black" />
     </GridBackground>
   )
 }

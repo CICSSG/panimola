@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Mail } from "lucide-react"
 import StickerButton from "./sticker-button"
+import Image from "next/image"
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -35,106 +36,137 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 const NAV = [
-  { label: "Home", href: "/" },
-  { label: "Events", href: "/events" },
-  { label: "About", href: "/about" },
+  { label: "Programs", href: "/programs" },
+  { label: "Departments", href: "/departments" },
+  { label: "Organizations", href: "/organizations" },
+  { label: "Admin & Staff", href: "/admin-staff" },
+  { label: "Pioneers Blueprint", href: "/pioneers-blueprint" },
+]
+
+const WEBSITES = [
+  { label: "CICSSG Website", href: "https://www.cicssg.com/" },
+  { label: "DLSU-D Website", href: "https://www.dlsud.edu.ph/" },
+  {
+    label: "DLSU-D Portal",
+    href: "https://portal.dlsud.edu.ph/mydlsud/login.aspx",
+  },
+  { label: "DLSU-D Schoolbook", href: "https://dlsud.edu20.org" },
 ]
 
 const SOCIALS = [
   {
     label: "Facebook",
     href: "https://facebook.com/dlsud.cicssg",
-    Icon: FacebookIcon,
+    Icon: "/Facebook.png",
     fill: "#1877F2",
   },
   {
     label: "Instagram",
     href: "https://instagram.com/dlsud.cicssg",
-    Icon: InstagramIcon,
+    Icon: "/Instagram.png",
     fill: "#f1ac46",
+  },
+  {
+    label: "Tiktok",
+    href: "https://tiktok.com/@dlsudcicssg",
+    Icon: "/Tiktok.png",
+    fill: "#000000",
   },
   {
     label: "Email",
     href: "mailto:cicssg@dlsud.edu.ph",
-    Icon: Mail,
+    Icon: "/Gmail.png",
     fill: "#fca5a5",
   },
 ]
 
 export default function Footer() {
   return (
-    <footer className="border-t-4 border-black bg-white">
-      {/* Main row */}
-      <div className="grid grid-cols-1 gap-0 border-b-4 border-black sm:grid-cols-3">
-        {/* Brand */}
-        <div className="flex flex-col justify-between gap-6 border-b-4 border-black p-8 sm:border-r-4 sm:border-b-0">
-          <div>
-            <div className="flex items-center gap-2">
-              <span
-                className="-rotate-1 border-4 border-black bg-[#fde047] px-2 py-1 text-base font-black uppercase"
-                style={{ boxShadow: "3px 3px 0 black" }}
-              >
-                CICS
-              </span>
-              <span className="text-base font-black uppercase">Panimola</span>
-            </div>
-            <p className="mt-3 max-w-xs text-xs leading-relaxed font-semibold text-black/50">
-              The official student government portal of the College of
-              Information and Computer Studies, DLSUD.
-            </p>
+    <footer className="border-2 border-black bg-white py-10">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-8 lg:flex-row lg:items-stretch lg:px-16">
+        <div className="flex h-full flex-col items-center justify-between lg:items-start gap-8">
+          <div className="flex flex-row gap-4">
+            <Image
+              src="/assets/LOGO.png"
+              alt="CICSSG Logo"
+              className="h-fit"
+              width={150}
+              height={100}
+            />
+            <Image
+              src="/CICSSG Logo.png"
+              alt="CICSSG Logo"
+              className="h-fit"
+              width={150}
+              height={100}
+            />
           </div>
-          <p className="text-xs font-bold tracking-widest text-black/30 uppercase">
-            © {new Date().getFullYear()} CICSSG
+
+          <p className="max-w-lg text-justify">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+
+          <div>
+            {SOCIALS.map(({ label, href, Icon, fill }) => (
+              <Link
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mr-2 inline-block transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
+              >
+                <Image
+                  src={Icon}
+                  alt={label}
+                  width={36}
+                  height={36}
+                  style={{ fill }}
+                />
+              </Link>
+            ))}
+          </div>
+
+          <p className="">
+            &copy; {new Date().getFullYear()} CICSSG. All rights reserved.
           </p>
         </div>
 
-        {/* Nav */}
-        <div className="flex flex-col gap-3 border-b-4 border-black p-8 sm:border-r-4 sm:border-b-0">
-          <span className="mb-1 text-xs font-extrabold tracking-widest text-black/40 uppercase">
-            Navigation
-          </span>
-          {NAV.map(({ label, href }) => (
-            <Link
-              key={label}
-              href={href}
-              className="group w-fit overflow-visible text-sm font-extrabold uppercase"
-            >
-              <StickerButton>{label}</StickerButton>
-            </Link>
-          ))}
-        </div>
-
-        {/* Socials */}
-        <div className="flex flex-col gap-3 p-8">
-          <span className="mb-1 text-xs font-extrabold tracking-widest text-black/40 uppercase">
-            Connect
-          </span>
-          {SOCIALS.map(({ label, href, Icon, fill }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-fit items-center gap-2 text-sm font-extrabold uppercase"
-            >
-              <StickerButton fill={fill}>
-                <div className="flex items-center gap-2">
-                  <Icon className="size-4 shrink-0" strokeWidth={2.5} />
+        <div className="flex flex-col md:flex-row w-full gap-6 items-center md:items-start justify-around">
+          <div className="flex flex-col gap-6">
+            <p className="font-kelsi text-4xl text-[#95cf56] [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
+              CICSCOVERY
+            </p>
+            <div className="flex flex-col items-start gap-2">
+              {NAV.map(({ label, href }) => (
+                <StickerButton
+                  as="a"
+                  href={href}
+                  className="rotate-3 px-3 py-1.5 font-blackhansans text-white [-webkit-text-stroke:1.5px_black] [paint-order:stroke_fill]"
+                >
                   {label}
-                </div>
-              </StickerButton>
-            </a>
-          ))}
-        </div>
-      </div>
+                </StickerButton>
+              ))}
+            </div>
+          </div>
 
-      {/* Bottom bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-8 py-4">
-        <p className="text-xs font-bold tracking-widest text-black/30 uppercase">
-          De La Salle University Dasmariñas
-        </p>
-        <div className="rotate-1 border-2 border-black bg-[#f9a8d4] px-2 py-0.5 text-xs font-extrabold tracking-wide uppercase">
-          Made with ♥ by CICS SG
+          <div className="flex flex-col gap-6">
+            <p className="font-kelsi text-4xl text-[#95cf56] [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
+              WEBSITES
+            </p>
+            <div className="flex flex-col items-start gap-2">
+              {WEBSITES.map(({ label, href }) => (
+                <StickerButton
+                  as="a"
+                  target="_blank"
+                  href={href}
+                  className="rotate-3 px-3 py-1.5 font-blackhansans text-white [-webkit-text-stroke:1.5px_black] [paint-order:stroke_fill]"
+                >
+                  {label}
+                </StickerButton>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </footer>
