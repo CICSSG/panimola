@@ -50,17 +50,10 @@ export default function Sidebar() {
               </StickerButton>
               <StickerButton
                 as="a"
-                href="/events"
+                href="/programs"
                 className="w-full px-8 py-4 text-lg"
               >
-                Events
-              </StickerButton>
-              <StickerButton
-                as="a"
-                href="/about"
-                className="w-full px-8 py-4 text-lg"
-              >
-                About
+                Programs
               </StickerButton>
             </nav>
           </motion.div>

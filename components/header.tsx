@@ -11,7 +11,7 @@ export default function Header() {
   const { open } = useSidebar()
 
   return (
-    <div className="fixed top-0 left-0 z-999 flex h-24 w-full items-center justify-between border-b-4 border-black bg-white">
+    <div className="fixed top-0 left-0 z-999 flex h-24 w-full items-center justify-between border-b-4 border-black bg-white px-4">
       {/* Logo */}
       <Link href="/" className="flex min-w-0 items-center gap-2 px-4 sm:gap-3 sm:px-6">
         <Image
@@ -39,10 +39,10 @@ export default function Header() {
           ) : (
             <Link
               href="/sign-in"
-              className="border-4 border-black bg-accent px-4 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5 rotate-4"
+              className="border border-black bg-accent px-4 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5 rotate-4"
               style={{ boxShadow: "3px 3px 0 black" }}
             >
-              <div className="-rotate-4 text-white [-webkit-text-stroke:0.5px_black]">Login</div>
+              <div className="-rotate-4 text-white text-lg font-semibold [paint-order:stroke_fill] [-webkit-text-stroke:2px_black]">Login</div>
             </Link>
           )}
         </div>
@@ -50,12 +50,13 @@ export default function Header() {
         {/* Menu button */}
         <motion.button
           onClick={open}
-          className="flex h-full items-center justify-center border-l-4 border-black px-7"
-          whileHover={{ backgroundColor: "#fde047" }}
+          className="border border-black bg-accent px-1.5 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5"
+          style={{ boxShadow: "3px 3px 0 black" }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           transition={{ duration: 0.15 }}
         >
-          <Menu className="size-7" strokeWidth={2.5} />
+          <span className=""><Menu className="size-7" strokeWidth={2.5} color="#fff"/></span>
         </motion.button>
       </div>
     </div>
