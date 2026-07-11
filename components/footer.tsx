@@ -39,7 +39,7 @@ const NAV = [
   { label: "Programs", href: "/programs" },
   { label: "Departments", href: "/departments" },
   { label: "Organizations", href: "/organizations" },
-  { label: "Admin & Staff", href: "/admin-staff" },
+  { label: "Admin & Staff", href: "/staff" },
   { label: "Pioneers Blueprint", href: "/pioneers-blueprint" },
 ]
 
