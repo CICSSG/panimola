@@ -1,5 +1,5 @@
 import "./globals.css"
-import { ClerkProvider } from "@clerk/nextjs"
+import { ClerkProvider, useAuth } from "@clerk/nextjs"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import { Metadata } from "next";
@@ -15,6 +15,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  
+
   return (
     <html
       lang="en"

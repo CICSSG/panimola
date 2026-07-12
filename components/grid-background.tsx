@@ -15,7 +15,7 @@ type GridBackgroundProps = {
 
 export default function GridBackground({
   size = 40,
-  opacity = 0.08,
+  opacity = 0.2,
   color = "0,0,0",
   background = "#ffffff",
   speed = -0.3,

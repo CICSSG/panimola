@@ -105,7 +105,7 @@ export default function StickerButton({
         }
         transition={{ type: "spring", stiffness: 400, damping: 22 }}
       >
-        <defs>
+        {/* <defs>
           <pattern
             id={patternId}
             patternUnits="userSpaceOnUse"
@@ -114,14 +114,27 @@ export default function StickerButton({
           >
             <circle cx="3" cy="3" r="1.2" fill="rgba(0,0,0,0.18)" />
           </pattern>
-        </defs>
-        <polygon
+        </defs> */}
+        {/* <polygon
           points={SHAPES[shape]}
           fill={fill}
           stroke="black"
           strokeWidth="3"
+        /> */}
+        {/* <polygon points={SHAPES[shape]} fill={`url(#${patternId})`} /> */}
+        <polygon
+          points="5,5 205,5 205,55 5,55"
+          fill="black"
+          stroke="black"
+          strokeWidth="3"
         />
-        <polygon points={SHAPES[shape]} fill={`url(#${patternId})`} />
+        <polygon
+          points="0,0 200,0 200,50 0,50"
+          fill={fill}
+          stroke="black"
+          strokeWidth="3"
+        />
+        {/* <rect width="100%" height="100%" fill={`url(#${patternId})`} /> */}
       </motion.svg>
       <span className="relative z-10">{children}</span>
     </Comp>

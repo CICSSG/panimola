@@ -82,7 +82,7 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="border-2 border-black bg-white py-10">
+    <footer className="border-t-2 border-black bg-white py-10">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-8 lg:flex-row lg:items-stretch lg:px-16">
         <div className="flex h-full flex-col items-center justify-between lg:items-start gap-8">
           <div className="flex flex-row gap-4">
