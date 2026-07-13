@@ -313,7 +313,7 @@ export default function SignInPage() {
           </motion.div>
 
           {/* TV + logo */}
-          <div className="relative flex w-full items-center justify-center mt-8 sm:mt-0">
+          <div className="relative mt-8 flex w-full items-center justify-center sm:mt-0">
             {/* Logo — scroll wrapper holds scroll transforms, inner div floats */}
             <motion.div
               className="pointer-events-none absolute z-20"
@@ -358,49 +358,49 @@ export default function SignInPage() {
                 }}
               />
 
-              <div className="absolute top-0 left-1/2 my-6 flex h-[75%] w-[90%] -translate-x-1/2 flex-col items-center justify-center md:bg-white">
-                <motion.div
-                  className="relative w-full border-4 border-black bg-white md:max-w-md lg:max-w-lg"
-                  style={{ boxShadow: "6px 6px 0 black" }}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.15 }}
-                >
-                  <div className="flex flex-row items-center border-b-4 border-black bg-[#95cf56] px-6 py-3">
-                    <Image
-                      src="/PionniThumbsUp.png"
-                      alt="Pionni Thumbs Up"
-                      width={50}
-                      height={50}
-                      className="size-16"
-                    />
-                    <h1 className="font-blackhansans text-3xl leading-none text-white [-webkit-text-stroke:1px_black]">
-                      Sign in
-                    </h1>
-                  </div>
+              <div className="absolute top-0 left-1/2 my-6 flex h-[75%] w-[90%] -translate-x-1/2 flex-col items-center justify-center md:bg-white"></div>
 
-                  <div className="flex flex-col gap-5 px-6 py-7">
-                    <div>
-                      <p className="text-sm font-bold text-black">
-                        Use your Microsoft school account.
-                      </p>
-                      <p className="text-sm font-bold text-black/60">
-                        Only 
-                        <span className="text-black/90">@dlsu-d.edu.ph</span>
-                         accounts can sign in
-                      </p>
-                    </div>
-                    <Suspense>
-                      <SignInForm />
-                    </Suspense>
-                    <div className="flex flex-row items-center border-2 border-black bg-[#fef085] px-4 py-2 text-xs">
-                      <InfoIcon className="mr-1 inline-block h-4 w-4" />
-                      Personal or non-school Microsoft accounts will be rejected
-                      after sign in.
-                    </div>
+              <motion.div
+                className="absolute top-2/5 left-1/2 -translate-1/2 z-50 w-full border-4 border-black bg-white md:max-w-md lg:max-w-lg"
+                style={{ boxShadow: "6px 6px 0 black" }}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.15 }}
+              >
+                <div className="flex flex-row items-center border-b-4 border-black bg-[#95cf56] px-6 py-3">
+                  <Image
+                    src="/PionniThumbsUp.png"
+                    alt="Pionni Thumbs Up"
+                    width={50}
+                    height={50}
+                    className="size-16"
+                  />
+                  <h1 className="font-blackhansans text-3xl leading-none text-white [-webkit-text-stroke:1px_black]">
+                    Sign in
+                  </h1>
+                </div>
+
+                <div className="flex flex-col gap-5 px-6 py-7">
+                  <div>
+                    <p className="text-sm font-bold text-black">
+                      Use your Microsoft school account.
+                    </p>
+                    <p className="text-sm font-bold text-black/60">
+                      Only 
+                      <span className="text-black/90">@dlsu-d.edu.ph</span>
+                       accounts can sign in
+                    </p>
                   </div>
-                </motion.div>
-              </div>
+                  <Suspense>
+                    <SignInForm />
+                  </Suspense>
+                  <div className="flex flex-row items-center border-2 border-black bg-[#fef085] px-4 py-2 text-xs">
+                    <InfoIcon className="mr-1 inline-block h-4 w-4" />
+                    Personal or non-school Microsoft accounts will be rejected
+                    after sign in.
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
