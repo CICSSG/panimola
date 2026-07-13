@@ -3,6 +3,9 @@ import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import GridBackground from "@/components/grid-background"
 import LogoLoop from "@/components/logo-loop"
+import { X } from "lucide-react";
+import ImageContainer from "@/components/image-container";
+import Image from "next/image";
 
 const float = (duration: number, amplitude: number, delay = 0) => ({
   animate: { y: [0, -amplitude, 0] },
@@ -375,28 +378,15 @@ export default function Page() {
           </div>
 
           {/* Right — retro window image placeholder */}
-          <div
-            className="w-full max-w-lg min-w-0 flex-1"
-            style={{ transform: "rotate(2deg)" }}
-          >
-            {/* Window title bar */}
-            <div className="flex items-center justify-between border-4 border-black bg-[#95cf56] px-3 py-2">
-              <span className="font-blackhansans text-sm font-bold">
-                &lt;image&gt;
-              </span>
-              <span className="select-none border-2 border-black bg-white px-2 py-0.5 text-xs leading-none font-bold">
-                ✕
-              </span>
-            </div>
-            {/* Image area */}
-            <div className="flex aspect-4/3 items-center justify-center border-4 border-t-0 border-black bg-gray-200">
-              <span className="text-lg font-bold text-gray-400">
-                [image placeholder]
-              </span>
-            </div>
-            {/* Shadow tab at bottom */}
-            <div className="ml-2 h-3 border-4 border-t-0 border-black bg-white" />
-          </div>
+          <ImageContainer rotate={2}>
+            <Image 
+              src={"/MainImage.png"}
+              alt="Main Image"
+              width={600}
+              height={700}
+              className="w-full h-full object-cover"
+            />
+          </ImageContainer>
         </div>
       </section>
 
@@ -423,28 +413,15 @@ export default function Page() {
           </div>
 
           {/* Right — retro window image placeholder */}
-          <div
-            className="w-full max-w-lg min-w-0 flex-1"
-            style={{ transform: "rotate(-2deg)" }}
-          >
-            {/* Window title bar */}
-            <div className="flex items-center justify-between border-4 border-black bg-[#95cf56] px-3 py-2">
-              <span className="font-blackhansans text-sm font-bold">
-                &lt;image&gt;
-              </span>
-              <span className="select-none border-2 border-black bg-white px-2 py-0.5 text-xs leading-none font-bold">
-                ✕
-              </span>
-            </div>
-            {/* Image area */}
-            <div className="flex aspect-4/3 items-center justify-center border-4 border-t-0 border-black bg-gray-200">
-              <span className="text-lg font-bold text-gray-400">
-                [image placeholder]
-              </span>
-            </div>
-            {/* Shadow tab at bottom */}
-            <div className="ml-2 h-3 border-4 border-t-0 border-black bg-white" />
-          </div>
+          <ImageContainer rotate={-2}>
+            <Image 
+              src={"/MainImage.png"}
+              alt="Main Image"
+              width={600}
+              height={700}
+              className="w-full h-full object-cover"
+            />
+          </ImageContainer>
         </div>
       </section>
 
