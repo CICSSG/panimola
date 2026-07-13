@@ -26,6 +26,7 @@ const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
 const ALLOWED_DOMAIN = "@dlsud.edu.ph"
 
 export default clerkMiddleware(async (auth, req) => {
+  
   const { sessionClaims, userId, isAuthenticated } = await auth()
   const metadata = sessionClaims?.publicMetadata as
     | {
@@ -60,9 +61,9 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Block unauthenticated access to onboarding
-  if (!isAuthenticated && isOnboardingRoute(req)) {
-    return NextResponse.redirect(new URL("/sign-in", req.url))
-  }
+  // if (!isAuthenticated && isOnboardingRoute(req)) {
+  //   return NextResponse.redirect(new URL("/sign-in", req.url))
+  // }
 
   // Block already-onboarded users from accessing onboarding
   if (isAuthenticated && isOnboardingRoute(req)) {
