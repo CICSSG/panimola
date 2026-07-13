@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { useSidebar } from "./sidebar-context"
 import StickerButton from "./sticker-button"
+import Image from "next/image";
 
 export default function Sidebar() {
   const { isOpen, close } = useSidebar()
@@ -40,43 +41,57 @@ export default function Sidebar() {
                 <X className="size-5" />
               </StickerButton>
             </div>
-            <nav className="flex flex-col gap-1 p-4">
+            <nav className="flex flex-col gap-2 p-4 text-white font-blackhansans [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
               <StickerButton
                 as="a"
                 href="/"
-                className="w-full px-8 py-4 text-lg"
+                className="w-fit px-6 py-2 text-lg"
               >
                 Home
               </StickerButton>
               <StickerButton
                 as="a"
                 href="/programs"
-                className="w-full px-8 py-4 text-lg"
+                className="w-fit px-6 py-2 text-lg"
               >
                 Programs
               </StickerButton>
               <StickerButton
                 as="a"
                 href="/departments"
-                className="w-full px-8 py-4 text-lg"
+                className="w-fit px-6 py-2 text-lg"
               >
                 Departments
               </StickerButton>
               <StickerButton
                 as="a"
                 href="/organizations"
-                className="w-full px-8 py-4 text-lg"
+                className="w-fit px-6 py-2 text-lg"
               >
                 Organizations
               </StickerButton>
               <StickerButton
                 as="a"
                 href="/staff"
-                className="w-full px-8 py-4 text-lg"
+                className="w-fit px-6 py-2 text-lg"
               >
                 Admin & Staff
               </StickerButton>
             </nav>
+            <Image 
+              src="/Star 01.png"
+              alt="Star"
+              width={200}
+              height={200}
+              className="absolute bottom-0 right-0 w-40 h-40"
+            />
+            <Image 
+              src="/Star 02.png"
+              alt="Star"
+              width={200}
+              height={200}
+              className="absolute bottom-40 left-0 w-fit h-70"
+            />
           </motion.div>
         </>
       )}

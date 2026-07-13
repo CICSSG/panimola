@@ -61,9 +61,9 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Block unauthenticated access to onboarding
-  // if (!isAuthenticated && isOnboardingRoute(req)) {
-  //   return NextResponse.redirect(new URL("/sign-in", req.url))
-  // }
+  if (!isAuthenticated && isOnboardingRoute(req)) {
+    return NextResponse.redirect(new URL("/sign-in", req.url))
+  }
 
   // Block already-onboarded users from accessing onboarding
   if (isAuthenticated && isOnboardingRoute(req)) {

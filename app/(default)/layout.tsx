@@ -11,7 +11,7 @@ import { useState } from "react";
 import { is } from "zod/v4/locales/index.js";
 
 const LOGGED_NAV = [
-  { label: "Dashboard", href: "/", Icon: LayoutDashboard },
+  { label: "Home", href: "/", Icon: LayoutDashboard },
   { label: "QR", href: "/qr", Icon: QrCode },
   { label: "Profile", href: "/profile", Icon: User },
 ]
@@ -23,7 +23,7 @@ export default function DefaultLayout({
 }) {
   const {user, isSignedIn} = useUser()
   const [activeHref, setActiveHref] = useState<string | null>("/")
-  const [ISLOGGEDIN, setISLOGGEDIN] = useState<boolean>(false)
+
   return (
     <ThemeProvider forcedTheme="light" defaultTheme="light">
       <SidebarProvider>
@@ -31,11 +31,11 @@ export default function DefaultLayout({
         <Sidebar />
         <div className="relative mt-24 flex min-h-[calc(100svh-6rem)] flex-col">
           <main className="flex-1">{children}</main>
-          <div className={ISLOGGEDIN ? "mb-10" : ""}>
+          <div className={isSignedIn ? "mb-10" : ""}>
             <Footer />
           </div>
         </div>
-        {ISLOGGEDIN && (
+        {isSignedIn && window.location.pathname != "/onboarding" && (
           <div className="fixed -bottom-1 left-0 z-50 flex flex-row *:basis-0 *:grow w-full overflow-hidden rounded-t-2xl border-t-2">
             {LOGGED_NAV.map((item) => (
               <Link
