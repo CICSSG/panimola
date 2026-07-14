@@ -29,15 +29,131 @@ const QR = () => {
     fetchUserData()
   }, [user])
 
-  function handleDownload(userData: any) {
-    console.log("Downloading QR Code for user:", userData)
-    var fileName = `${userData?.firstName}_${userData?.lastName}_QR_Code`
-    QRref.current?.download({
-      name: 'qr-code',
-      format: 'png',
-      size: 1000,
-    })
+  async function handleDownload(userData: any) {
+  const fileName = `${userData?.firstName}_${userData?.lastName}_QR_Code.png`
+
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+
+  const svg = QRref.current?.svg
+
+  if (!svg) {
+    console.error("QR SVG not found")
+    return
   }
+
+  const clonedSvg = svg.cloneNode(true) as SVGSVGElement
+
+  // Embed images inside SVG (PionniThumbsUp.png)
+  const images = clonedSvg.querySelectorAll("image")
+
+  for (const image of images) {
+    const href =
+      image.getAttribute("href") ||
+      image.getAttribute("xlink:href")
+
+    if (href) {
+      try {
+        const imageUrl = href.startsWith("/")
+          ? `${window.location.origin}${href}`
+          : href
+
+        const response = await fetch(imageUrl)
+        const blob = await response.blob()
+
+        const base64 = await new Promise<string>((resolve) => {
+          const reader = new FileReader()
+
+          reader.onloadend = () => {
+            resolve(reader.result as string)
+          }
+
+          reader.readAsDataURL(blob)
+        })
+
+        image.setAttribute("href", base64)
+        image.removeAttribute("xlink:href")
+      } catch (error) {
+        console.error("Failed embedding QR image:", error)
+      }
+    }
+  }
+
+  const serializer = new XMLSerializer()
+  const svgString = serializer.serializeToString(clonedSvg)
+
+  const svgBlob = new Blob([svgString], {
+    type: "image/svg+xml;charset=utf-8",
+  })
+
+  const svgUrl = URL.createObjectURL(svgBlob)
+
+  const img = new Image()
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas")
+
+    canvas.width = 1000
+    canvas.height = 1000
+
+    const ctx = canvas.getContext("2d")
+
+    if (!ctx) {
+      console.error("Canvas context unavailable")
+      return
+    }
+
+    // White background
+    ctx.fillStyle = "white"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    )
+
+    URL.revokeObjectURL(svgUrl)
+
+    canvas.toBlob((pngBlob) => {
+      if (!pngBlob) {
+        console.error("Failed creating PNG blob")
+        return
+      }
+
+      const pngUrl = URL.createObjectURL(pngBlob)
+
+      const link = document.createElement("a")
+
+      link.href = pngUrl
+
+      if (isIOS) {
+        // iOS Safari ignores download attribute
+        link.target = "_blank"
+      } else {
+        link.download = fileName
+      }
+
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      // Give Safari time before revoking
+      setTimeout(() => {
+        URL.revokeObjectURL(pngUrl)
+      }, 5000)
+
+    }, "image/png")
+  }
+
+  img.onerror = () => {
+    console.error("Failed loading SVG into image")
+    URL.revokeObjectURL(svgUrl)
+  }
+
+  img.src = svgUrl
+}
 
   return (
     <GridBackground className="flex min-h-screen flex-col items-center justify-center gap-6 pb-40">
