@@ -87,13 +87,11 @@ const QR = () => {
           onClick={(e) => {
             e.preventDefault()
             const fileName = `${userData?.firstName}_${userData?.lastName}_QR_Code`
-            if (QRref.current) {
-              QRref.current?.download({
-                name: fileName,
-                format: "png",
-                size: 1000,
-              })
-            }
+            QRref.current?.download({
+              name: fileName,
+              format: "png",
+              size: 1000,
+            })
           }}
         >
           <span className="font-blackhansans text-lg font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
