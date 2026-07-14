@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react"
-import { ReactQRCode, ReactQRCodeRef } from "@lglab/react-qr-code"
+import { ReactQRCode, type ReactQRCodeRef } from "@lglab/react-qr-code"
 import GridBackground from "@/components/grid-background"
 import { Menu, X } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
@@ -28,6 +28,16 @@ const QR = () => {
     }
     fetchUserData()
   }, [user])
+
+  function handleDownload(userData: any) {
+    console.log("Downloading QR Code for user:", userData)
+    var fileName = `${userData?.firstName}_${userData?.lastName}_QR_Code`
+    QRref.current?.download({
+      name: 'qr-code',
+      format: 'png',
+      size: 1000,
+    })
+  }
 
   return (
     <GridBackground className="flex min-h-screen flex-col items-center justify-center gap-6 pb-40">
@@ -84,15 +94,7 @@ const QR = () => {
         <button
           className="border border-black bg-accent px-1.5 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5"
           style={{ boxShadow: "3px 3px 0 black" }}
-          onClick={(e) => {
-            e.preventDefault()
-            const fileName = `${userData?.firstName}_${userData?.lastName}_QR_Code`
-            QRref.current?.download({
-              name: fileName,
-              format: "png",
-              size: 1000,
-            })
-          }}
+          onClick={() => handleDownload(userData)}
         >
           <span className="font-blackhansans text-lg font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
             Download QR Code
