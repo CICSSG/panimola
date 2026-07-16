@@ -1,11 +1,13 @@
 "use client"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import GridBackground from "@/components/grid-background"
 import LogoLoop from "@/components/logo-loop"
-import { X } from "lucide-react";
-import ImageContainer from "@/components/image-container";
-import Image from "next/image";
+import { X } from "lucide-react"
+import ImageContainer from "@/components/image-container"
+import Image from "next/image"
+import { useMediaQuery } from "@reactuses/core"
+import { div } from "framer-motion/client"
 
 const float = (duration: number, amplitude: number, delay = 0) => ({
   animate: { y: [0, -amplitude, 0] },
@@ -14,9 +16,256 @@ const float = (duration: number, amplitude: number, delay = 0) => ({
   },
 })
 
+type Activity = {
+  title: string
+  times: string[]
+  sticker?: string
+  stickerStyle?: string
+}
+
+const COA: { date: string; activities: Activity[] }[] = [
+  {
+    date: "July 27, 2026",
+    activities: [
+      {
+        title: "Animo Walk",
+        times: [
+          "6:30 AM - 7:00 AM - Assembly Period",
+          "7:00 AM - 8:30 AM - Walk Proper",
+        ],
+        sticker: "/stickers/cics froshies.png",
+        stickerStyle: "-translate-y-18 mx-auto size-60",
+      },
+      {
+        title: "Eucharistic Celebration",
+        times: ["9:00 AM - 10:00 AM - Ugnayang La Salle"],
+        sticker: "/stickers/goodluck.png",
+        stickerStyle: "rotate-25 size-40",
+      },
+      {
+        title: "AnimoVenture",
+        times: ["10:00 AM - 12:00 NN - Ugnayang La Salle"],
+        sticker: "/stickers/CICS PIONNI.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "Recruitment Booths",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+      },
+      {
+        title: "Bazaar",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/ctrl z.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "College Orientation for CEAT",
+        times: ["1:00 PM - 5:00 PM - Ugnayang La Salle"],
+        sticker: "/stickers/pionni error.png",
+        stickerStyle: "size-60",
+      },
+      {
+        title: "Campus Tour of CCJE and COED",
+        times: ["1:00 PM - 4:00 PM - DLSU-D Grounds (Specific)"],
+      },
+    ],
+  },
+  {
+    date: "July 28, 2026",
+    activities: [
+      {
+        title: "Meet the Founder",
+        times: ["8:00 AM - 11:30 AM - Assigned Classrooms"],
+        sticker: "/stickers/cics froshies.png",
+        stickerStyle: "-translate-y-18 mx-auto size-60",
+      },
+      {
+        title: "Recruitment Booths",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/goodluck.png",
+        stickerStyle: "rotate-25 size-40",
+      },
+      {
+        title: "Bazaar",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/CICS PIONNI.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "Holy Mass",
+        times: ["12:00 NN - 1:00 PM - University Chapel"],
+      },
+      {
+        title: "SPADE",
+        times: ["1:00 PM - 4:30 PM - Assigned Classrooms"],
+        sticker: "/stickers/ctrl z.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "PAGbahagi",
+        times: ["1:30 PM - 4:30 PM - (Tentative)"],
+        sticker: "/stickers/pionni error.png",
+        stickerStyle: "size-60",
+      },
+    ],
+  },
+  {
+    date: "July 29, 2026",
+    activities: [
+      {
+        title: "Recruitment Booths",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/cics froshies.png",
+        stickerStyle: "-translate-y-18 mx-auto size-60",
+      },
+      {
+        title: "Bazaar",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/goodluck.png",
+        stickerStyle: "rotate-25 size-40",
+      },
+      {
+        title: "College Orientation for CCJE",
+        times: ["8:00 AM - 12:00 NN - Exhibit Hall at CEAT Bldg"],
+        sticker: "/stickers/CICS PIONNI.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "Campus Tour of CTHM",
+        times: ["8:00 AM - 11:00 AM - DLSU-D Grounds (Specific)"],
+      },
+      {
+        title: "Holy Mass",
+        times: ["12:00 NN - 1:00 PM - University Chapel"],
+        sticker: "/stickers/ctrl z.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "College Orientation for CTHM",
+        times: ["1:00 PM - 5:00 PM - Salrial Hall at CTHM"],
+        sticker: "/stickers/CICS PIONNI.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "Campus Tour of CEAT",
+        times: ["1:00 PM - 4:00 PM - DLSU-D Grounds (Specific)"],
+      },
+      {
+        title: "College Orientation for COED",
+        times: ["1:00 PM - 5:00 PM - Exhibit Hall at CEAT Bldg"],
+        sticker: "/stickers/pionni yapping.png",
+        stickerStyle: "size-60",
+      },
+      {
+        title: "PAGbahagi",
+        times: ["1:30 PM - 4:30 PM - (Tentative)"],
+      }
+    ],
+  },
+  {
+    date: "July 30, 2026",
+    activities: [
+      {
+        title: "Recruitment Booths",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/cics froshies.png",
+        stickerStyle: "-translate-y-18 mx-auto size-60",
+      },
+      {
+        title: "Bazaar",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/goodluck.png",
+        stickerStyle: "rotate-25 size-40",
+      },
+      {
+        title: "College Orientation for CICS",
+        times: ["8:00 AM - 12:00 NN - Salrial Hall at CTHM Bldg"],
+        sticker: "/stickers/CICS PIONNI.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "College Orientation for CBAA",
+        times: ["8:00 AM - 12:00 NN - Exhibit Hall at CEAT Bldg"],
+        sticker: "/stickers/pionni thumbs up.png",
+        stickerStyle: "size-40",
+      },
+      {
+        title: "Campus Tour of CLAC and COS",
+        times: ["8:00 AM - 11:00 PM - DLSU-D Grounds (Specific)"],
+        sticker: "/stickers/ctrl z.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "Holy Mass",
+        times: ["12:00 NN - 1:00 PM - University Chapel"],
+        sticker: "/stickers/pionni animo head.png",
+        stickerStyle: "rotate-12 size-50",
+      },
+      {
+        title: "College Orientation for COS",
+        times: ["1:00 PM - 5:00 PM - Salrial Hall at CTHM Bldg"],
+        sticker: "/stickers/pionni animo.png",
+        stickerStyle: "size-30",
+      },
+      {
+        title: "College Orientation for CLAC",
+        times: ["1:00 PM - 5:00 PM - DLSU-D Grandstand"],
+      },
+      {
+        title: "Campus Tour of CBAA and CICS",
+        times: ["1:00 PM - 4:00 PM - DLSU-D Grounds (Specific)"],
+        sticker: "/stickers/pionni yapping.png",
+        stickerStyle: "size-60",
+      },
+      {
+        title: "PAGbahagi",
+        times: ["1:30 PM - 4:30 PM - (Tentative)"],
+      },
+    ],
+  },
+  {
+    date: "July 31, 2026",
+    activities: [
+      {
+        title: "Recruitment Booths",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/cics froshies.png",
+        stickerStyle: "-translate-y-18 mx-auto size-60",
+      },
+      {
+        title: "Bazaar",
+        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        sticker: "/stickers/goodluck.png",
+        stickerStyle: "rotate-25 size-40",
+      },
+      {
+        title: "Reflection Session",
+        times: ["8:00 AM - 10:00 AM - Ugnayang La Salle"],
+        sticker: "/stickers/CICS PIONNI.png",
+        stickerStyle: "size-50",
+      },
+      {
+        title: "Eucharistic Celebration",
+        times: ["10:00 AM - 11:00 AM - Ugnayang La Salle"],
+        sticker: "/stickers/pionni yapping.png",
+        stickerStyle: "size-60",
+      },
+      {
+        title: "Student L.I.F.E.",
+        times: ["2:00 PM - 5:00 PM - Ugnayang La Salle"],
+        sticker: "/stickers/pionni error.png",
+        stickerStyle: "size-60",
+      }
+    ],
+  },
+]
+
 export default function Page() {
   const heroRef = useRef<HTMLElement>(null)
   const { scrollY } = useScroll()
+  const isMobile = useMediaQuery("(max-width: 767px)")
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
+  const [activeDay, setActiveDay] = useState(0)
   const scrollYProgress = useTransform(scrollY, [0, 400], [0, 1])
 
   // Stars fly outward from center on scroll
@@ -93,7 +342,7 @@ export default function Page() {
 
         {/* StarTR */}
         <motion.div
-          className="pointer-events-none absolute -top-12 -right-10 xl:right-1/6 xl:-top-1/6 2xl:right-2/7"
+          className="pointer-events-none absolute -top-12 -right-10 xl:-top-1/6 xl:right-1/6 2xl:right-2/7"
           style={{
             zIndex: 15,
             x: starTRX,
@@ -134,7 +383,7 @@ export default function Page() {
 
         {/* StarBL */}
         <motion.div
-          className="pointer-events-none absolute bottom-0 -left-10 lg:left-10 lg:bottom-20 xl:bottom-[-12%] xl:left-[3%]"
+          className="pointer-events-none absolute bottom-0 -left-10 lg:bottom-20 lg:left-10 xl:bottom-[-12%] xl:left-[3%]"
           style={{
             zIndex: 15,
             x: starBLX,
@@ -175,7 +424,7 @@ export default function Page() {
 
         {/* StarBR */}
         <motion.div
-          className="pointer-events-none absolute bottom-10 right-0 md:bottom-30 xl:bottom-[25%] xl:right-[5%]"
+          className="pointer-events-none absolute right-0 bottom-10 md:bottom-30 xl:right-[5%] xl:bottom-[25%]"
           style={{
             zIndex: 15,
             x: starBRX,
@@ -216,7 +465,7 @@ export default function Page() {
 
         {/* Pencil */}
         <motion.div
-          className="pointer-events-none absolute bottom-25 -right-25 md:bottom-70 md:-right-20 xl:bottom-[29%] xl:right-[12%]"
+          className="pointer-events-none absolute -right-25 bottom-25 md:-right-20 md:bottom-70 xl:right-[12%] xl:bottom-[29%]"
           style={{
             zIndex: 30,
             x: pencilX,
@@ -297,7 +546,13 @@ export default function Page() {
             }}
           />
 
-          <motion.div className="absolute bottom-[30%] z-30 flex -translate-x-2 gap-6" style={{ y: btnScrollY, scale: btnScale, opacity: btnOpacity }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }}>
+          <motion.div
+            className="absolute bottom-[30%] z-30 flex -translate-x-2 gap-6"
+            style={{ y: btnScrollY, scale: btnScale, opacity: btnOpacity }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
             <button
               className="rotate-5 rounded-none border-2 border-black bg-[#fc7646] px-4 py-2 font-blackhansans text-2xl text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none"
               style={{ boxShadow: "6px 6px 0 black" }}
@@ -315,17 +570,17 @@ export default function Page() {
       </section>
 
       {/* Logo / partner loop */}
-      <div className="relative z-20 bg-white mt-20">
+      <div className="relative z-20 mt-20 bg-white">
         <div className="absolute top-5 h-[90%] w-full bg-white" />
         <LogoLoop
-          className="relative z-2 py-3 outline-4 outline-black"
+          className="relative z-2 py-1 outline-4 outline-black lg:py-3"
           bgColor="#95cf56"
           textColor="#fef085"
           gap={64}
           speed={200}
-          rotation={-2}
+          rotation={isMobile ? -3 : -2}
           pauseOnHover={false}
-          logoHeight={48}
+          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
           items={[
             {
               type: "text",
@@ -336,15 +591,15 @@ export default function Page() {
           ]}
         />
         <LogoLoop
-          className="absolute -top-12 py-3 outline-4 outline-black z-10"
+          className="absolute -top-8 z-1 py-1 outline-4 outline-black lg:-top-17 lg:py-3"
           bgColor="#fc7646"
           textColor="#fef085"
           gap={64}
           reverse
           speed={200}
-          rotation={2}
+          rotation={isMobile ? 4 : 2}
           pauseOnHover={false}
-          logoHeight={48}
+          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
           items={[
             {
               type: "text",
@@ -356,15 +611,15 @@ export default function Page() {
         />
       </div>
       {/* What is PANIMOLA section */}
-      <section className="relative z-50 bg-white px-8 py-20 md:px-16 lg:px-24">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-12 md:flex-row md:items-start">
+      <section className="relative z-50 bg-white px-8 py-20 pb-0 md:px-16 lg:px-24">
+        <div className="mx-auto flex max-w-6xl flex-col-reverse items-center gap-12 md:flex-row md:items-start">
           {/* Left — heading + body */}
           <div className="min-w-0 flex-1">
             <div
-              className="mb-6 inline-block border-4 border-black bg-[#fde047] px-4 py-2"
+              className="mb-6 inline-block border-4 border-black bg-[#fef085] px-4 py-2"
               style={{ boxShadow: "4px 4px 0 black" }}
             >
-              <h2 className="font-blackhansans text-2xl font-extrabold uppercase">
+              <h2 className="font-blackhansans text-2xl font-extrabold text-white uppercase [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
                 What is PANIMOLA
               </h2>
             </div>
@@ -378,13 +633,13 @@ export default function Page() {
           </div>
 
           {/* Right — retro window image placeholder */}
-          <ImageContainer rotate={2}>
-            <Image 
+          <ImageContainer rotate={isMobile ? -2 : 2}>
+            <Image
               src={"/MainImage.png"}
               alt="Main Image"
               width={600}
               height={700}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           </ImageContainer>
         </div>
@@ -392,14 +647,14 @@ export default function Page() {
 
       {/* What is CICS section */}
       <section className="relative z-50 bg-white px-8 py-20 md:px-16 lg:px-24">
-        <div className="mx-auto flex md:flex-row-reverse max-w-6xl flex-col items-center gap-12 md:items-start">
+        <div className="mx-auto flex max-w-6xl flex-col-reverse items-center gap-12 md:flex-row-reverse md:items-start">
           {/* Left — heading + body */}
           <div className="min-w-0 flex-1">
             <div
-              className="mb-6 inline-block border-4 border-black bg-[#fde047] px-4 py-2"
+              className="mb-6 inline-block border-4 border-black bg-[#fef085] px-4 py-2"
               style={{ boxShadow: "4px 4px 0 black" }}
             >
-              <h2 className="font-blackhansans text-2xl font-extrabold uppercase">
+              <h2 className="font-blackhansans text-2xl font-extrabold text-white uppercase [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
                 What is CICS
               </h2>
             </div>
@@ -414,17 +669,148 @@ export default function Page() {
 
           {/* Right — retro window image placeholder */}
           <ImageContainer rotate={-2}>
-            <Image 
+            <Image
               src={"/MainImage.png"}
               alt="Main Image"
               width={600}
               height={700}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           </ImageContainer>
         </div>
       </section>
 
+      {/* Logo / partner loop */}
+      <div className="relative z-20 pt-10">
+        <div className="absolute top-0 h-[60%] w-full bg-white" />
+        <LogoLoop
+          className="relative z-2 py-1 outline-4 outline-black lg:py-3"
+          bgColor="#95cf56"
+          textColor="#fef085"
+          gap={64}
+          speed={200}
+          rotation={isMobile ? -3 : -2}
+          pauseOnHover={false}
+          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+          items={[
+            {
+              type: "text",
+              content: "CALENDAR OF ACTIVITIES",
+              className:
+                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+            },
+          ]}
+        />
+        <LogoLoop
+          className="absolute -top-8 z-1 py-1 outline-4 outline-black lg:-top-12 lg:py-3"
+          bgColor="#fc7646"
+          textColor="#fef085"
+          gap={64}
+          reverse
+          speed={200}
+          rotation={isMobile ? 4 : 2}
+          pauseOnHover={false}
+          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+          items={[
+            {
+              type: "text",
+              content: "CALENDAR OF ACTIVITIES",
+              className:
+                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+            },
+          ]}
+        />
+      </div>
+
+      {/* Calendar of Activities section */}
+      <section className="relative z-50 mb-16 px-8 md:px-16 lg:px-24">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-8">
+          {/* Day Picker */}
+          <div className="flex w-full flex-row flex-nowrap justify-center gap-8 overflow-x-auto pb-2">
+            {COA.map((day, index) => (
+              <button
+                key={index}
+                className={`border border-black px-4 py-2 font-blackhansans text-nowrap text-white [-webkit-text-stroke:1px_black] [paint-order:stroke_fill] ${
+                  activeDay === index ? "bg-[#95cf56]" : "bg-[#fef085]"
+                }`}
+                onClick={() => setActiveDay(index)}
+                style={{ boxShadow: "3px 3px 0 black" }}
+              >
+                Day {index + 1}
+              </button>
+            ))}
+          </div>
+
+          {/* Date */}
+          <div className="mb-6 inline-block -skew-2 border-2 border-black bg-[#95cf56] px-6 py-2 md:mr-85">
+            <h2 className="font-blackhansans text-2xl text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
+              {COA[activeDay].date}
+            </h2>
+          </div>
+
+          {/* Content */}
+          <div className="relative w-full">
+            <div className="absolute left-3 h-full w-1 border-l-2 border-dashed border-black md:left-1/2" />
+
+            {COA[activeDay].activities.map((activity, index) => (
+              <motion.div
+                className="relative z-2 grid max-w-4xl grid-cols-[50px_1fr] items-center justify-between gap-4 md:mx-auto md:grid-cols-[1fr_50px_1fr] lg:grid-cols-[1fr_100px_1fr]"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{once: true}}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                {/* Activity */}
+                <div
+                  key={index}
+                  className={`mb-6 flex w-full flex-col gap-2 md:text-center ${isMobile ? "order-2" : index % 2 === 0 ? "order-1 ml-auto" : "order-3"}`}
+                >
+                  <h3
+                    className={`mb-4 w-fit border border-black bg-accent px-6 py-1 font-blackhansans text-lg font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] md:w-full ${isMobile ? "-rotate-2" : index % 2 === 0 ? "-rotate-3" : "rotate-3"}`}
+                    style={{ boxShadow: "3px 3px 0 black" }}
+                  >
+                    {activity.title}
+                  </h3>
+                  <ul className="font-bold">
+                    {activity.times.map((time, timeIndex) => (
+                      <li key={timeIndex}>{time}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Dot */}
+                <div
+                  className="order-1 mt-2 mb-auto size-6 border border-black bg-[#7ea1d0] md:order-2 md:mx-auto"
+                  style={{ boxShadow: "3px 3px 0 black" }}
+                />
+
+                {/* Stikorl */}
+                <div
+                  className={`hidden md:block ${index % 2 === 0 ? "order-3" : "order-1"}`}
+                >
+                  {activity.sticker && (
+                    <Image
+                      src={activity.sticker}
+                      alt="Sticker"
+                      width={180}
+                      height={180}
+                      className={`mx-auto mb-4 h-fit object-contain ${activity.stickerStyle || "size-40"}`}
+                    />
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <Image
+            src="/stickers/pionni stamp.png"
+            alt="Sticker"
+            width={280}
+            height={180}
+            className="hidden md:block"
+          />
+        </div>
+      </section>
     </GridBackground>
   )
 }
