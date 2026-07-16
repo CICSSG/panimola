@@ -1,5 +1,5 @@
 "use client"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import GridBackground from "@/components/grid-background"
 import LogoLoop from "@/components/logo-loop"
@@ -8,6 +8,7 @@ import ImageContainer from "@/components/image-container"
 import Image from "next/image"
 import { useMediaQuery } from "@reactuses/core"
 import { div } from "framer-motion/client"
+import Link from "next/link"
 
 const float = (duration: number, amplitude: number, delay = 0) => ({
   animate: { y: [0, -amplitude, 0] },
@@ -159,7 +160,7 @@ const COA: { date: string; activities: Activity[] }[] = [
       {
         title: "PAGbahagi",
         times: ["1:30 PM - 4:30 PM - (Tentative)"],
-      }
+      },
     ],
   },
   {
@@ -255,7 +256,7 @@ const COA: { date: string; activities: Activity[] }[] = [
         times: ["2:00 PM - 5:00 PM - Ugnayang La Salle"],
         sticker: "/stickers/pionni error.png",
         stickerStyle: "size-60",
-      }
+      },
     ],
   },
 ]
@@ -265,6 +266,7 @@ export default function Page() {
   const { scrollY } = useScroll()
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
+  const [isLoaded, setIsLoaded] = useState(false)
   const [activeDay, setActiveDay] = useState(0)
   const scrollYProgress = useTransform(scrollY, [0, 400], [0, 1])
 
@@ -298,6 +300,10 @@ export default function Page() {
   const btnScrollY = useTransform(scrollYProgress, [0, 1], [0, -250])
   const btnScale = useTransform(scrollYProgress, [0, 1], [1, 0.2])
   const btnOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 1])
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
 
   return (
     <GridBackground className="min-h-svh w-full">
@@ -547,24 +553,26 @@ export default function Page() {
           />
 
           <motion.div
-            className="absolute bottom-[30%] z-30 flex -translate-x-2 gap-6"
+            className="absolute bottom-[25%] z-30 flex -translate-x-2 gap-6"
             style={{ y: btnScrollY, scale: btnScale, opacity: btnOpacity }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <button
-              className="rotate-5 rounded-none border-2 border-black bg-[#fc7646] px-4 py-2 font-blackhansans text-2xl text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none"
+            <Link
+              href="/#schedule"
+              className="rotate-5 rounded-none border-2 border-black bg-[#fc7646] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
               style={{ boxShadow: "6px 6px 0 black" }}
             >
               <div className="-rotate-2">Schedule</div>
-            </button>
-            <button
-              className="translate-y-5 -rotate-5 rounded-none border-2 border-black bg-[#fef085] px-4 py-2 font-blackhansans text-2xl text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none"
+            </Link>
+            <Link
+              href="/sign-in"
+              className="translate-y-5 -rotate-5 rounded-none border-2 border-black bg-[#fef085] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
               style={{ boxShadow: "6px 6px 0 black" }}
             >
               <div className="-rotate-2">Register</div>
-            </button>
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -572,43 +580,46 @@ export default function Page() {
       {/* Logo / partner loop */}
       <div className="relative z-20 mt-20 bg-white">
         <div className="absolute top-5 h-[90%] w-full bg-white" />
-        <LogoLoop
-          className="relative z-2 py-1 outline-4 outline-black lg:py-3"
-          bgColor="#95cf56"
-          textColor="#fef085"
-          gap={64}
-          speed={200}
-          rotation={isMobile ? -3 : -2}
-          pauseOnHover={false}
-          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
-          items={[
-            {
-              type: "text",
-              content: "ABOUT",
-              className:
-                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
-            },
-          ]}
-        />
-        <LogoLoop
-          className="absolute -top-8 z-1 py-1 outline-4 outline-black lg:-top-17 lg:py-3"
-          bgColor="#fc7646"
-          textColor="#fef085"
-          gap={64}
-          reverse
-          speed={200}
-          rotation={isMobile ? 4 : 2}
-          pauseOnHover={false}
-          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
-          items={[
-            {
-              type: "text",
-              content: "ABOUT",
-              className:
-                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
-            },
-          ]}
-        />
+        {isLoaded && (
+          <>
+            <LogoLoop
+              className="relative z-2 py-1 outline-4 outline-black lg:py-3"
+              bgColor="#95cf56"
+              textColor="#fef085"
+              gap={64}
+              speed={200}
+              rotation={isMobile ? -3 : -2}
+              pauseOnHover={false}
+              logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+              items={[
+                {
+                  type: "text",
+                  content: "ABOUT",
+                  className: "font-kelsi  [-webkit-text-stroke:1px_black]",
+                },
+              ]}
+            />
+            <LogoLoop
+              className="absolute -top-8 z-1 py-1 outline-4 outline-black lg:-top-17 lg:py-3"
+              bgColor="#fc7646"
+              textColor="#fef085"
+              gap={64}
+              reverse
+              speed={200}
+              rotation={isMobile ? 4 : 2}
+              pauseOnHover={false}
+              logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+              items={[
+                {
+                  type: "text",
+                  content: "ABOUT",
+                  className:
+                    "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+                },
+              ]}
+            />
+          </>
+        )}
       </div>
       {/* What is PANIMOLA section */}
       <section className="relative z-50 bg-white px-8 py-20 pb-0 md:px-16 lg:px-24">
@@ -683,50 +694,57 @@ export default function Page() {
       {/* Logo / partner loop */}
       <div className="relative z-20 pt-10">
         <div className="absolute top-0 h-[60%] w-full bg-white" />
-        <LogoLoop
-          className="relative z-2 py-1 outline-4 outline-black lg:py-3"
-          bgColor="#95cf56"
-          textColor="#fef085"
-          gap={64}
-          speed={200}
-          rotation={isMobile ? -3 : -2}
-          pauseOnHover={false}
-          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
-          items={[
-            {
-              type: "text",
-              content: "CALENDAR OF ACTIVITIES",
-              className:
-                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
-            },
-          ]}
-        />
-        <LogoLoop
-          className="absolute -top-8 z-1 py-1 outline-4 outline-black lg:-top-12 lg:py-3"
-          bgColor="#fc7646"
-          textColor="#fef085"
-          gap={64}
-          reverse
-          speed={200}
-          rotation={isMobile ? 4 : 2}
-          pauseOnHover={false}
-          logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
-          items={[
-            {
-              type: "text",
-              content: "CALENDAR OF ACTIVITIES",
-              className:
-                "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
-            },
-          ]}
-        />
+        {isLoaded && (
+          <>
+            <LogoLoop
+              className="relative z-2 py-1 outline-4 outline-black lg:py-3"
+              bgColor="#95cf56"
+              textColor="#fef085"
+              gap={64}
+              speed={200}
+              rotation={isMobile ? -3 : -2}
+              pauseOnHover={false}
+              logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+              items={[
+                {
+                  type: "text",
+                  content: "CALENDAR OF ACTIVITIES",
+                  className:
+                    "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+                },
+              ]}
+            />
+            <LogoLoop
+              className="absolute -top-8 z-1 py-1 outline-4 outline-black lg:-top-12 lg:py-3"
+              bgColor="#fc7646"
+              textColor="#fef085"
+              gap={64}
+              reverse
+              speed={200}
+              rotation={isMobile ? 4 : 2}
+              pauseOnHover={false}
+              logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+              items={[
+                {
+                  type: "text",
+                  content: "CALENDAR OF ACTIVITIES",
+                  className:
+                    "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+                },
+              ]}
+            />
+          </>
+        )}
       </div>
 
       {/* Calendar of Activities section */}
-      <section className="relative z-50 mb-16 px-8 md:px-16 lg:px-24">
+      <section
+        id="schedule"
+        className="relative z-50 mb-16 scroll-mt-70 px-8 md:px-16 lg:px-24"
+      >
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-8">
           {/* Day Picker */}
-          <div className="flex w-full flex-row flex-nowrap justify-center gap-8 overflow-x-auto pb-2">
+          <div className="flex w-full flex-row flex-nowrap gap-8 overflow-x-auto pb-2 md:justify-center">
             {COA.map((day, index) => (
               <button
                 key={index}
@@ -742,7 +760,7 @@ export default function Page() {
           </div>
 
           {/* Date */}
-          <div className="mb-6 inline-block -skew-2 border-2 border-black bg-[#95cf56] px-6 py-2 md:mr-85">
+          <div className="mb-6 inline-block -skew-2 border-2 border-black bg-[#95cf56] px-6 py-2 md:mr-auto">
             <h2 className="font-blackhansans text-2xl text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
               {COA[activeDay].date}
             </h2>
@@ -757,26 +775,28 @@ export default function Page() {
                 className="relative z-2 grid max-w-4xl grid-cols-[50px_1fr] items-center justify-between gap-4 md:mx-auto md:grid-cols-[1fr_50px_1fr] lg:grid-cols-[1fr_100px_1fr]"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{once: true}}
+                viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 {/* Activity */}
-                <div
-                  key={index}
-                  className={`mb-6 flex w-full flex-col gap-2 md:text-center ${isMobile ? "order-2" : index % 2 === 0 ? "order-1 ml-auto" : "order-3"}`}
-                >
-                  <h3
-                    className={`mb-4 w-fit border border-black bg-accent px-6 py-1 font-blackhansans text-lg font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] md:w-full ${isMobile ? "-rotate-2" : index % 2 === 0 ? "-rotate-3" : "rotate-3"}`}
-                    style={{ boxShadow: "3px 3px 0 black" }}
+                {isLoaded && (
+                  <div
+                    key={index}
+                    className={`mb-6 flex w-full flex-col gap-2 md:text-center ${isMobile ? "order-2" : index % 2 === 0 ? "order-1 ml-auto" : "order-3"}`}
                   >
-                    {activity.title}
-                  </h3>
-                  <ul className="font-bold">
-                    {activity.times.map((time, timeIndex) => (
-                      <li key={timeIndex}>{time}</li>
-                    ))}
-                  </ul>
-                </div>
+                    <h3
+                      className={`mb-4 w-fit border border-black bg-accent px-6 py-1 font-blackhansans text-lg font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] md:w-full ${isMobile ? "-rotate-2" : index % 2 === 0 ? "-rotate-3" : "rotate-3"}`}
+                      style={{ boxShadow: "3px 3px 0 black" }}
+                    >
+                      {activity.title}
+                    </h3>
+                    <ul className="font-bold">
+                      {activity.times.map((time, timeIndex) => (
+                        <li key={timeIndex}>{time}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Dot */}
                 <div

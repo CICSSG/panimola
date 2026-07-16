@@ -27,14 +27,7 @@ const SHAPES = {
 
 const SHAPE_KEYS = Object.keys(SHAPES) as (keyof typeof SHAPES)[]
 const FILLS = [
-  "#fde047",
-  "#f9a8d4",
-  "#7dd3fc",
-  "#86efac",
-  "#fca5a5",
-  "#c4b5fd",
-  "#fdba74",
-  "#a5f3fc",
+  "#fef085",
 ]
 
 function randomShape(): keyof typeof SHAPES {

@@ -71,12 +71,7 @@ function SignInForm() {
         transition={{ duration: 0.1 }}
       >
         {loading ? "Redirecting…" : "Sign in with Microsoft"}
-      </motion.button>
-      {IS_PRODUCTION && (
-        <p className="text-center text-xs font-bold tracking-wide text-black/40 uppercase">
-          Only @dlsud.edu.ph accounts are allowed.
-        </p>
-      )}
+      </motion.button>      
     </div>
   )
 }

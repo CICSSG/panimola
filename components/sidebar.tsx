@@ -4,6 +4,7 @@ import { X } from "lucide-react"
 import { useSidebar } from "./sidebar-context"
 import StickerButton from "./sticker-button"
 import Image from "next/image";
+import { Button } from "./ui/button";
 
 export default function Sidebar() {
   const { isOpen, close } = useSidebar()
@@ -31,15 +32,10 @@ export default function Sidebar() {
           >
             <div className="flex items-center justify-between p-7">
               <span className="font-kelsi text-5xl text-[#fef085] [-webkit-text-stroke:6px_black] [paint-order:stroke_fill]">Menu</span>
-              <StickerButton
-                onClick={close}
-                className="text-sm"
-                fill="#fca5a5"
-                shape="splat"
-                aria-label="Close menu"
-              >
-                <X className="size-5" />
-              </StickerButton>
+              <Button
+              onClick={close} className="bg-[#fef085] size-10 hover:bg-[#fef085]/85 border-2 border-black">
+                <X className="size-6" strokeWidth={6} color="#fc7646"/>
+              </Button>
             </div>
             <nav className="flex flex-col gap-2 p-4 text-white font-blackhansans [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
               <StickerButton

@@ -175,7 +175,7 @@ export const LogoLoop = memo<LogoLoopProps>(function LogoLoop({
   speed = 120,
   reverse,
   direction,
-  logoHeight = 28,
+  logoHeight,
   pauseOnHover,
   hoverSpeed,
   fadeOut = false,
