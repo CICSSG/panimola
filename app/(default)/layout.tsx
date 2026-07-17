@@ -64,7 +64,7 @@ export default function DefaultLayout({
           <div className="fixed right-2 bottom-2 z-50 flex flex-col items-center gap-2">
             {hasScrolled && (
               <motion.div
-                className="flex size-12 flex-row items-center justify-center gap-2 rounded-full border border-black bg-accent text-sm font-medium text-black hover:bg-accent/90"
+                className="flex size-12 flex-row items-center justify-center gap-2 rounded-full border border-black bg-[#fef085] text-sm font-medium text-black hover:bg-[#fef085]/90 hover:cursor-pointer"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}

@@ -3,10 +3,13 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { useSidebar } from "./sidebar-context"
 import StickerButton from "./sticker-button"
-import Image from "next/image";
-import { Button } from "./ui/button";
+import Image from "next/image"
+import { Button } from "./ui/button"
+import { useUser } from "@clerk/nextjs"
+import Link from "next/link"
 
 export default function Sidebar() {
+  const { user, isSignedIn } = useUser()
   const { isOpen, close } = useSidebar()
 
   return (
@@ -31,62 +34,68 @@ export default function Sidebar() {
             className="fixed top-0 right-0 z-1001 flex h-full w-80 flex-col border-l-4 border-black bg-[#95cf56]"
           >
             <div className="flex items-center justify-between p-7">
-              <span className="font-kelsi text-5xl text-[#fef085] [-webkit-text-stroke:6px_black] [paint-order:stroke_fill]">Menu</span>
+              <span className="font-kelsi text-5xl text-[#fef085] [-webkit-text-stroke:6px_black] [paint-order:stroke_fill]">
+                Menu
+              </span>
               <Button
-              onClick={close} className="bg-[#fef085] size-10 hover:bg-[#fef085]/85 border-2 border-black">
-                <X className="size-6" strokeWidth={6} color="#fc7646"/>
+                onClick={close}
+                className="size-10 border-2 border-black bg-[#fef085] hover:bg-[#fef085]/85"
+              >
+                <X className="size-6" strokeWidth={6} color="#fc7646" />
               </Button>
             </div>
-            <nav className="flex flex-col gap-2 p-4 text-white font-blackhansans [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
-              <StickerButton
-                as="a"
-                href="/"
-                className="w-fit px-6 py-2 text-lg"
-              >
-                Home
+            <nav className="flex flex-col gap-2 p-4 font-blackhansans text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
+              <StickerButton className="w-fit px-6 py-2 text-lg">
+                <Link href="/" className="h-full w-full" onClick={close}>
+                  Home
+                </Link>
               </StickerButton>
-              <StickerButton
-                as="a"
-                href="/programs"
-                className="w-fit px-6 py-2 text-lg"
-              >
-                Programs
+              <StickerButton className="w-fit px-6 py-2 text-lg">
+                <Link
+                  href="/programs"
+                  className="h-full w-full"
+                  onClick={close}
+                >
+                  Programs
+                </Link>
               </StickerButton>
-              <StickerButton
-                as="a"
-                href="/departments"
-                className="w-fit px-6 py-2 text-lg"
-              >
-                Departments
+              <StickerButton className="w-fit px-6 py-2 text-lg">
+                <Link
+                  href="/departments"
+                  className="h-full w-full"
+                  onClick={close}
+                >
+                  Departments
+                </Link>
               </StickerButton>
-              <StickerButton
-                as="a"
-                href="/organizations"
-                className="w-fit px-6 py-2 text-lg"
-              >
-                Organizations
+              <StickerButton className="w-fit px-6 py-2 text-lg">
+                <Link
+                  href="/organizations"
+                  className="h-full w-full"
+                  onClick={close}
+                >
+                  Organizations
+                </Link>
               </StickerButton>
-              <StickerButton
-                as="a"
-                href="/staff"
-                className="w-fit px-6 py-2 text-lg"
-              >
-                Admin & Staff
+              <StickerButton className="w-fit px-6 py-2 text-lg">
+                <Link href="/staff" className="h-full w-full" onClick={close}>
+                  Admin & Staff
+                </Link>
               </StickerButton>
             </nav>
-            <Image 
+            <Image
               src="/Star 01.png"
               alt="Star"
               width={200}
               height={200}
-              className="absolute bottom-0 right-0 w-40 h-40"
+              className="absolute right-0 bottom-0 h-40 w-40"
             />
-            <Image 
+            <Image
               src="/Star 02.png"
               alt="Star"
               width={200}
               height={200}
-              className="absolute bottom-40 left-0 w-fit h-70"
+              className="absolute bottom-40 left-0 h-70 w-fit"
             />
           </motion.div>
         </>
