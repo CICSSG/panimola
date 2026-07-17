@@ -3,12 +3,19 @@ import GridBackground from "@/components/grid-background"
 import { LogoLoop } from "@/components/logo-loop"
 import StickerButton from "@/components/sticker-button"
 import { Button } from "@base-ui/react"
+import { useMediaQuery } from "@reactuses/core";
 import Image from "next/image"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 const ProgramsPage = () => {
+  const isMobile = useMediaQuery("(max-width: 767px)")
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
+  const [isLoaded, setIsLoaded] = useState(false)
   const [program, setProgram] = useState<"cs" | "it">("cs")
 
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
   return (
     <GridBackground className="flex flex-col gap-6 py-4">
       <div className="mx-4 mt-15 flex max-w-6xl flex-col items-center justify-between gap-20 border-2 border-black bg-accent px-8 py-4 lg:flex-row xl:mx-auto">
@@ -60,7 +67,7 @@ const ProgramsPage = () => {
         </div>
       </div>
 
-      <div className="mx-2 grid max-w-6xl grid-cols-2 items-center justify-between gap-4 px-4 py-4 md:mx-6 md:gap-10 lg:flex-row xl:mx-auto">
+      <div className="grid max-w-6xl mx-auto md:grid-cols-2 items-center justify-between gap-4 px-4 py-4 md:mx-6 md:gap-10 lg:flex-row xl:mx-auto">
         <Button
           onClick={() => setProgram("cs")}
           className={`border border-black px-3 py-2 font-blackhansans text-lg font-bold tracking-wider text-white transition-transform duration-500 [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-1 hover:scale-105 sm:text-xl ${program == "it" ? "bg-accent" : "-translate-y-1 scale-105 bg-[#95cf56]"}`}
@@ -80,26 +87,26 @@ const ProgramsPage = () => {
       {program === "cs" ? (
         <div className="flex flex-col gap-6 mb-10">
           <LogoLoop
-            className="relative z-2 py-3 outline-4 outline-black"
+            className="relative z-2 py-1 outline-4 outline-black lg:py-3"
             bgColor="#95cf56"
             textColor="#fef085"
             gap={64}
             speed={200}
             rotation={2}
             pauseOnHover={false}
-            logoHeight={48}
+            logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
             items={[
               {
                 type: "text",
                 content: "Computer Science",
                 className:
-                  "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+                  "font-kelsi  [-webkit-text-stroke:1px_black]",
               },
             ]}
           />
 
-          <div className="relative flex flex-col items-center lg:items-stretch gap-4 xl:mx-auto -mt-8 mb-6 w-full max-w-6xl mx-4">
-            <div className="flex max-w-[80%] flex-col gap-4 border-2 border-black bg-white px-6 py-10">
+          <div className="relative flex flex-col items-center lg:items-stretch gap-4 xl:mx-auto -mt-8 mb-6 w-full max-w-6xl md:mx-4">
+            <div className="flex md:max-w-[80%] flex-col gap-4 border-2 border-black bg-white px-6 py-10">
               <div className="mb-2 flex flex-col lg:flex-row gap-4 lg:gap-8 font-blackhansans text-3xl text-[#fef085] [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] text-center">
                 Bachelor of Science in{" "}
                 <div className="lg:rotate-2 border border-black bg-[#95cf56] px-3 py-2 text-white">
@@ -199,26 +206,26 @@ const ProgramsPage = () => {
       ) : (
         <div className="flex flex-col gap-6 mb-10">
           <LogoLoop
-            className="relative z-2 py-3 outline-4 outline-black"
+            className="relative z-2 py-1 outline-4 outline-black lg:py-3"
             bgColor="#fc7646"
             textColor="#fef085"
             gap={64}
             speed={200}
             rotation={-2}
             pauseOnHover={false}
-            logoHeight={48}
+            logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
             items={[
               {
                 type: "text",
                 content: "Information Technology",
                 className:
-                  "text-4xl font-extrabold font-kelsi  [-webkit-text-stroke:1px_black]",
+                  "font-kelsi  [-webkit-text-stroke:1px_black]",
               },
             ]}
           />
 
-          <div className="relative flex flex-col items-center lg:items-stretch gap-4 xl:mx-auto -mt-8 mb-6 w-full max-w-6xl mx-4">
-            <div className="xl:ml-auto lg:mx-auto flex max-w-[80%] flex-col lg:items-end gap-4 border-2 border-black bg-white px-6 py-10">
+          <div className="relative flex flex-col items-center lg:items-stretch gap-4 xl:mx-auto -mt-8 mb-6 w-full max-w-6xl md:mx-4">
+            <div className="xl:ml-auto lg:mx-auto flex md:max-w-[80%] flex-col lg:items-end gap-4 border-2 border-black bg-white px-6 py-10">
               <div className="mb-2 flex flex-col lg:flex-row gap-4 lg:gap-8 font-blackhansans text-3xl text-[#fef085] [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] text-center">
                 Bachelor of Science in{" "}
                 <div className="lg:-rotate-2 border border-black bg-[#95cf56] px-3 py-2 text-2xl text-white">

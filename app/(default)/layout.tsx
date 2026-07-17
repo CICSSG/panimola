@@ -4,10 +4,18 @@ import Footer from "@/components/footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SidebarProvider } from "@/components/sidebar-context"
 import Sidebar from "@/components/sidebar"
-import { LayoutDashboard, PanelRight, QrCode, User } from "lucide-react"
+import { motion } from "framer-motion"
+import {
+  ArrowUpIcon,
+  ArrowUpToLine,
+  LayoutDashboard,
+  PanelRight,
+  QrCode,
+  User,
+} from "lucide-react"
 import Link from "next/link"
 import { useUser } from "@clerk/nextjs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { is } from "zod/v4/locales/index.js"
 
 const LOGGED_NAV = [
@@ -22,7 +30,24 @@ export default function DefaultLayout({
   children: React.ReactNode
 }) {
   const { user, isSignedIn } = useUser()
-  const [activeHref, setActiveHref] = useState<string | null>("/")
+  const [hasScrolled, setHasScrolled] = useState(false)
+
+  useEffect(() => {
+    // 1. Define the event handler
+    const handleScroll = () => {
+      if (window.scrollY > 150) {
+        setHasScrolled(true)
+      } else {
+        setHasScrolled(false)
+      }
+    }
+
+    // 2. Attach listener safely on client mount
+    window.addEventListener("scroll", handleScroll)
+
+    // 3. Clean up the event listener to avoid memory leaks
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
     <ThemeProvider forcedTheme="light" defaultTheme="light">
@@ -36,7 +61,18 @@ export default function DefaultLayout({
           </div>
         </div>
         {isSignedIn && window.location.pathname != "/onboarding" && (
-          <div className="fixed right-2 bottom-2 z-50 flex flex-row">
+          <div className="fixed right-2 bottom-2 z-50 flex flex-col items-center gap-2">
+            {hasScrolled && (
+              <motion.div
+                className="flex size-12 flex-row items-center justify-center gap-2 rounded-full border border-black bg-accent text-sm font-medium text-black hover:bg-accent/90"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              >
+                <ArrowUpToLine />
+              </motion.div>
+            )}
             <Link
               href={"/qr"}
               className="flex size-16 flex-row items-center justify-center gap-2 rounded-full border border-black bg-accent text-sm font-medium text-black hover:bg-accent/90"

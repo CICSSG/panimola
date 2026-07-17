@@ -83,8 +83,8 @@ const SOCIALS = [
 export default function Footer() {
   return (
     <footer className="border-t-2 border-black bg-white py-10">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-8 lg:flex-row lg:items-stretch lg:px-16">
-        <div className="flex h-full flex-col items-center justify-between lg:items-start gap-8">
+      <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 px-8 lg:flex-row lg:items-stretch lg:px-16">
+        <div className="flex h-full flex-col lg:items-start gap-8">
           <div className="flex flex-row gap-4">
             <Image
               src="/assets/LOGO.png"
@@ -103,8 +103,7 @@ export default function Footer() {
           </div>
 
           <p className="max-w-lg text-justify">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+           
           </p>
 
           <div>
@@ -127,12 +126,13 @@ export default function Footer() {
             ))}
           </div>
 
-          <p className="">
+          <p className="hidden lg:block">
             &copy; {new Date().getFullYear()} CICSSG. All rights reserved.
           </p>
         </div>
-
-        <div className="flex flex-col md:flex-row w-full gap-6 items-center md:items-start justify-around">
+        
+        <div className="h-2 w-full lg:hidden bg-[linear-gradient(to_right,#000_50%,transparent_50%)] bg-size-[30px_2px] bg-repeat-x bg-top"/>
+        <div className="flex flex-col md:flex-row w-full gap-6 justify-around">
           <div className="flex flex-col gap-6">
             <p className="font-kelsi text-4xl text-[#95cf56] [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
               CICSCOVERY
@@ -168,6 +168,11 @@ export default function Footer() {
             </div>
           </div>
         </div>
+
+        <div className="h-2 w-full lg:hidden bg-[linear-gradient(to_right,#000_50%,transparent_50%)] bg-size-[30px_2px] bg-repeat-x bg-top"/>
+        <p className="lg:hidden">
+            &copy; {new Date().getFullYear()} CICSSG. All rights reserved.
+          </p>
       </div>
     </footer>
   )
