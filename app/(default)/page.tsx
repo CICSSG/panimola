@@ -634,12 +634,12 @@ export default function Page() {
                 What is PANIMOLA
               </h2>
             </div>
-            <p className="text-base leading-relaxed text-gray-700">
-              Lorem ipsum dolor sit amet consectetur. Arcu id hac sagittis diam
-              in. Pretium pharetra non velit vitae eget phasellus viverra. Augue
-              amet habitant a commodo odio. Quam curabitur nec augue lectus
-              tellus. Tellus condimentum senectus mattis netus eget vel tellus
-              nibh. Amet semper eros urna lorem erat tempor amet natoque netus.
+            <p className="text-base leading-relaxed text-gray-700 text-justify">
+              Panimola is the official welcome and orientation program for
+              incoming students, designed to introduce them to the college
+              community, its organizations, resources, and opportunities. It
+              marks the beginning of their academic journey by fostering
+              connection, engagement, and a sense of belonging.
             </p>
           </div>
 
@@ -669,12 +669,15 @@ export default function Page() {
                 What is CICS
               </h2>
             </div>
-            <p className="text-base leading-relaxed text-gray-700">
-              Lorem ipsum dolor sit amet consectetur. Arcu id hac sagittis diam
-              in. Pretium pharetra non velit vitae eget phasellus viverra. Augue
-              amet habitant a commodo odio. Quam curabitur nec augue lectus
-              tellus. Tellus condimentum senectus mattis netus eget vel tellus
-              nibh. Amet semper eros urna lorem erat tempor amet natoque netus.
+            <p className="text-base leading-relaxed text-gray-700 text-justify">
+              The College of Information and Computer Studies (CICS) is a leader
+              in technological education, committed to academic excellence,
+              innovation, and ethical standards. We foster a dynamic and
+              inclusive environment where students, faculty, and industry
+              partners work together to address and solve intricate
+              technological issues. CICS inspires and prepares future leaders
+              who excel in their professions and make meaningful contributions
+              to the global digital landscape.
             </p>
           </div>
 

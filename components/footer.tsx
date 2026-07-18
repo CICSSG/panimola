@@ -126,7 +126,7 @@ export default function Footer() {
             ))}
           </div>
 
-          <p className="hidden lg:block">
+          <p className="hidden lg:block text-nowrap">
             &copy; {new Date().getFullYear()} CICSSG. All rights reserved.
           </p>
         </div>
@@ -140,11 +140,11 @@ export default function Footer() {
             <div className="flex flex-col items-start gap-2">
               {NAV.map(({ label, href }) => (
                 <StickerButton
-                  as="a"
-                  href={href}
                   className="rotate-3 px-3 py-1.5 font-blackhansans text-white [-webkit-text-stroke:1.5px_black] [paint-order:stroke_fill]"
                 >
-                  {label}
+                  <Link href={href} className="h-full w-full">
+                    {label}
+                  </Link>
                 </StickerButton>
               ))}
             </div>
