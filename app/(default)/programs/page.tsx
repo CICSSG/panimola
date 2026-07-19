@@ -133,23 +133,25 @@ const ProgramsPage = () => {
 
       {program === "cs" ? (
         <div className="mb-10 flex flex-col gap-6">
-          <LogoLoop
-            className="relative z-2 py-1 outline-4 outline-black lg:py-3"
-            bgColor="#95cf56"
-            textColor="#fef085"
-            gap={64}
-            speed={200}
-            rotation={2}
-            pauseOnHover={false}
-            logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
-            items={[
-              {
-                type: "text",
-                content: "Computer Science",
-                className: "font-kelsi  [-webkit-text-stroke:1px_black]",
-              },
-            ]}
-          />
+          {isLoaded && (
+            <LogoLoop
+              className="relative z-2 py-1 outline-4 outline-black lg:py-3"
+              bgColor="#95cf56"
+              textColor="#fef085"
+              gap={64}
+              speed={200}
+              rotation={2}
+              pauseOnHover={false}
+              logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+              items={[
+                {
+                  type: "text",
+                  content: "Computer Science",
+                  className: "font-kelsi  [-webkit-text-stroke:1px_black]",
+                },
+              ]}
+            />
+          )}
 
           <div className="relative -mt-8 mb-6 flex w-full max-w-6xl flex-col items-center gap-4 md:mx-4 lg:items-stretch xl:mx-auto">
             <div className="flex flex-col gap-4 border-2 border-black bg-white px-6 py-10 md:max-w-[80%]">
@@ -254,27 +256,29 @@ const ProgramsPage = () => {
         </div>
       ) : (
         <div className="mb-10 flex flex-col gap-6">
-          <LogoLoop
-            className="relative z-2 py-1 outline-4 outline-black lg:py-3"
-            bgColor="#fc7646"
-            textColor="#fef085"
-            gap={64}
-            speed={200}
-            rotation={-2}
-            pauseOnHover={false}
-            logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
-            items={[
-              {
-                type: "text",
-                content: "Information Technology",
-                className: "font-kelsi  [-webkit-text-stroke:1px_black]",
-              },
-            ]}
-          />
+          {isLoaded && (
+            <LogoLoop
+              className="relative z-2 py-1 outline-4 outline-black lg:py-3"
+              bgColor="#fc7646"
+              textColor="#fef085"
+              gap={64}
+              speed={200}
+              rotation={-2}
+              pauseOnHover={false}
+              logoHeight={isMobile ? 28 : isTablet ? 36 : 48}
+              items={[
+                {
+                  type: "text",
+                  content: "Information Technology",
+                  className: "font-kelsi  [-webkit-text-stroke:1px_black]",
+                },
+              ]}
+            />
+          )}
 
           <div className="relative -mt-8 mb-6 flex w-full max-w-6xl flex-col items-center gap-4 md:mx-4 lg:items-stretch xl:mx-auto">
             <div className="flex flex-col gap-4 border-2 border-black bg-white px-6 py-10 md:max-w-[80%] lg:mx-auto lg:items-end xl:ml-auto">
-              <div className="mb-2  flex flex-col gap-4 text-center font-blackhansans text-3xl text-[#fef085] [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] lg:flex-row lg:gap-8">
+              <div className="mb-2 flex flex-col gap-4 text-center font-blackhansans text-3xl text-[#fef085] [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] lg:flex-row lg:gap-8">
                 Bachelor of Science in{" "}
                 <div className="border border-black bg-[#95cf56] px-3 py-2 text-2xl text-white lg:-rotate-2">
                   Information Technology
