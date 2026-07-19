@@ -35,6 +35,29 @@ const CSSubjects = [
   "System Fundamentals",
 ]
 
+const CSPath = [
+  "Software Engineer",
+  "Application Developer",
+  "Game Developer",
+  "AI / Machine Learning Engineer",
+  "Data Scientist",
+  "Data Engineer",
+  "Database Designer",
+  "Systems Analyst",
+  "DevOps Engineer",
+  "Cloud Engineer",
+  "Cybersecurity Engineer",
+  "Research Scientist",
+  "Computer Vision Engineer",
+  "Gameplay AI Engineer",
+  "Graphics / 3D Software Engineer",
+  "UI/UX Engineer",
+  "Quality Assurance Engineer",
+  "CS Instructor / Professor",
+  "Technical Consultant",
+  "Solutions Architect",
+]
+
 const ITSubjects = [
   "Introduction to Computing",
   "Fundamentals of Programming",
@@ -53,6 +76,29 @@ const ITSubjects = [
   "System Integration and Architecture",
   "System Administration and Maintenance",
   "Practicum",
+]
+
+const ITPath = [
+  "Full-Stack Web Developer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Mobile Application Developer",
+  "UI/UX Designer",
+  "Systems Administrator",
+  "Network Administrator",
+  "Cloud Engineer",
+  "DevOps Engineer",
+  "Database Administrator",
+  "Business Analyst",
+  "Systems Analyst",
+  "IT Support Specialist",
+  "Technical Support Engineer",
+  "Cybersecurity Analyst",
+  "QA Engineer / Software Tester",
+  "ERP Consultant",
+  "IT Project Manager",
+  "Solutions Consultant",
+  "IT Instructor",
 ]
 const ProgramsPage = () => {
   const isMobile = useMediaQuery("(max-width: 767px)")
@@ -221,13 +267,13 @@ const ProgramsPage = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-              {Array.from({ length: 11 }).map((_, index) => (
+              {CSPath.map((path, index) => (
                 <div
                   key={index}
                   className="flex flex-col items-center justify-center gap-2 border border-black bg-accent px-4 py-2 text-center font-semibold text-white [-webkit-text-stroke:1px_black] [paint-order:stroke_fill]"
                   style={{ boxShadow: "3px 3px 0 black" }}
                 >
-                  Career {index + 1}
+                  {path}
                 </div>
               ))}
             </div>
@@ -339,13 +385,13 @@ const ProgramsPage = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-              {Array.from({ length: 11 }).map((_, index) => (
+              {ITPath.map((path, index) => (
                 <div
                   key={index}
                   className="flex flex-col items-center justify-center gap-2 border border-black bg-accent px-4 py-2 text-center font-semibold text-white [-webkit-text-stroke:1px_black] [paint-order:stroke_fill]"
                   style={{ boxShadow: "3px 3px 0 black" }}
                 >
-                  Career {index + 1}
+                  {path}
                 </div>
               ))}
             </div>
