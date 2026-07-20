@@ -69,7 +69,7 @@ const SOCIALS = [
   {
     label: "Tiktok",
     href: "https://tiktok.com/@dlsudcicssg",
-    Icon: "/Tiktok.png",
+    Icon: "/TikTok.png",
     fill: "#000000",
   },
   {
