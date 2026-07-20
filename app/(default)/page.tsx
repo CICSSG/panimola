@@ -263,6 +263,7 @@ const COA: { date: string; activities: Activity[] }[] = [
 
 export default function Page() {
   const heroRef = useRef<HTMLElement>(null)
+  const scheduleRef = useRef<HTMLElement>(null)
   const { scrollY } = useScroll()
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
@@ -305,6 +306,9 @@ export default function Page() {
     setIsLoaded(true)
   }, [])
 
+  const scrollToSchedule = () => {
+    scheduleRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
   return (
     <GridBackground className="min-h-svh w-full">
       {/* Hero */}
@@ -559,13 +563,13 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <Link
-              href="/#schedule"
+            <button
+              onClick={scrollToSchedule}
               className="rotate-5 rounded-none border-2 border-black bg-[#fc7646] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
               style={{ boxShadow: "6px 6px 0 black" }}
             >
               <div className="-rotate-2">Schedule</div>
-            </Link>
+            </button>
             <Link
               href="/sign-in"
               className="translate-y-5 -rotate-5 rounded-none border-2 border-black bg-[#fef085] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
@@ -742,7 +746,7 @@ export default function Page() {
 
       {/* Calendar of Activities section */}
       <section
-        id="schedule"
+        ref={scheduleRef}
         className="relative z-50 mb-16 scroll-mt-70 px-8 md:px-16 lg:px-24"
       >
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-8">

@@ -31,24 +31,19 @@ export default function Header() {
         {/* Auth */}
         <div className="flex items-center px-6">
           {!isLoaded ? (
-            <div className="h-8 w-8 animate-pulse rounded-full bg-black/10" />
-          ) : isSignedIn ? (
-            <div className="flex items-center gap-3">
-              <UserButton />
-              <span className="hidden text-sm font-bold sm:block">
-                Welcome, {user?.firstName}!
-              </span>
-            </div>
+            <></>
           ) : (
-            <Link
-              href="/sign-in"
-              className="rotate-4 border border-black bg-accent px-4 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5"
-              style={{ boxShadow: "3px 3px 0 black" }}
-            >
-              <div className="-rotate-4 text-lg font-semibold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
-                Login
-              </div>
-            </Link>
+            !isSignedIn && (
+              <Link
+                href="/sign-in"
+                className="rotate-4 border border-black bg-accent px-4 py-1.5 text-sm font-extrabold uppercase transition-transform hover:-translate-y-0.5"
+                style={{ boxShadow: "3px 3px 0 black" }}
+              >
+                <div className="-rotate-4 text-lg font-semibold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
+                  Login
+                </div>
+              </Link>
+            )
           )}
         </div>
 
