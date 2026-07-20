@@ -318,7 +318,7 @@ export default function Page() {
       >
         {/* StarTL — scroll wrapper (position + scroll transforms) > float wrapper (idle bob) */}
         <motion.div
-          className="pointer-events-none absolute top-2 left-4 xl:top-[17%] xl:left-[12%] 2xl:top-[15%] 2xl:left-[10%]"
+          className="pointer-events-none absolute top-10 left-1 xl:top-[17%] xl:left-[12%] 2xl:top-[15%] 2xl:left-[10%]"
           style={{
             zIndex: 15,
             x: starTLX,
@@ -342,6 +342,7 @@ export default function Page() {
             alt=""
             aria-hidden
             style={{ width: "clamp(80px, 10vw, 130px)" }}
+            className="max-w-10 md:max-w-40"
             animate={{ y: 0, rotate: 0 }}
             transition={{
               y: { duration: 3.8, repeat: Infinity, ease: "easeInOut" },
@@ -352,7 +353,7 @@ export default function Page() {
 
         {/* StarTR */}
         <motion.div
-          className="pointer-events-none absolute -top-12 -right-10 xl:-top-1/6 xl:right-1/6 2xl:right-2/7"
+          className="pointer-events-none absolute -top-4 -right-6 xl:-top-1/6 xl:right-1/6 2xl:right-2/7"
           style={{
             zIndex: 15,
             x: starTRX,
@@ -376,7 +377,7 @@ export default function Page() {
             src="/assets/StarTR.png"
             alt=""
             aria-hidden
-            className="max-w-40 md:max-w-60 xl:max-w-120"
+            className="max-w-35 md:max-w-60 xl:max-w-120"
             style={{ width: "clamp(320px, 16vw, 340px)" }}
             animate={{ y: 0, rotate: 0 }}
             transition={{
@@ -393,7 +394,7 @@ export default function Page() {
 
         {/* StarBL */}
         <motion.div
-          className="pointer-events-none absolute bottom-0 -left-10 lg:bottom-20 lg:left-10 xl:bottom-[-12%] xl:left-[3%]"
+          className="pointer-events-none absolute -bottom-5 -left-10 md:-bottom-20 md:-left-15 lg:bottom-10 lg:-left-10 xl:bottom-[-12%] xl:left-[3%]"
           style={{
             zIndex: 15,
             x: starBLX,
@@ -417,7 +418,7 @@ export default function Page() {
             src="/assets/StarBL.png"
             alt=""
             aria-hidden
-            className="max-w-30 md:max-w-50 lg:max-w-60 xl:max-w-200"
+            className="max-w-25 md:max-w-50 lg:max-w-60 xl:max-w-200"
             style={{ width: "clamp(380px, 25vw, 450px)" }}
             animate={{ y: 0, rotate: 0 }}
             transition={{
@@ -434,7 +435,7 @@ export default function Page() {
 
         {/* StarBR */}
         <motion.div
-          className="pointer-events-none absolute right-0 bottom-10 md:bottom-30 xl:right-[5%] xl:bottom-[25%]"
+          className="pointer-events-none absolute -right-2 bottom-20 md:bottom-30 xl:right-[5%] xl:bottom-[25%]"
           style={{
             zIndex: 15,
             x: starBRX,
@@ -458,7 +459,7 @@ export default function Page() {
             src="/assets/StarBR.png"
             alt=""
             aria-hidden
-            className="max-w-20 md:max-w-100"
+            className="max-w-15 md:max-w-100"
             style={{ width: "clamp(100px, 13vw, 190px)" }}
             animate={{ y: 0, rotate: 0 }}
             transition={{
@@ -565,14 +566,14 @@ export default function Page() {
           >
             <button
               onClick={scrollToSchedule}
-              className="rotate-5 rounded-none border-2 border-black bg-[#fc7646] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
+              className="rotate-5 rounded-none border border-black bg-[#fc7646] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
               style={{ boxShadow: "6px 6px 0 black" }}
             >
               <div className="-rotate-2">Schedule</div>
             </button>
             <Link
               href="/sign-in"
-              className="translate-y-5 -rotate-5 rounded-none border-2 border-black bg-[#fef085] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
+              className="translate-y-5 -rotate-5 rounded-none border border-black bg-[#fef085] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
               style={{ boxShadow: "6px 6px 0 black" }}
             >
               <div className="-rotate-2">Register</div>
@@ -638,7 +639,7 @@ export default function Page() {
                 What is PANIMOLA
               </h2>
             </div>
-            <p className="text-base leading-relaxed text-gray-700 text-justify">
+            <p className="text-justify text-base leading-relaxed text-gray-700">
               Panimola is the official welcome and orientation program for
               incoming students, designed to introduce them to the college
               community, its organizations, resources, and opportunities. It
@@ -648,15 +649,17 @@ export default function Page() {
           </div>
 
           {/* Right — retro window image placeholder */}
-          <ImageContainer rotate={isMobile ? -2 : 2}>
-            <Image
-              src={"/panimola.jpg"}
-              alt="Main Image"
-              width={600}
-              height={700}
-              className="h-full w-full object-cover"
-            />
-          </ImageContainer>
+          {isLoaded && (
+            <ImageContainer rotate={isMobile ? -2 : 2}>
+              <Image
+                src={"/panimola.jpg"}
+                alt="Main Image"
+                width={600}
+                height={700}
+                className="h-full w-full object-cover"
+              />
+            </ImageContainer>
+          )}
         </div>
       </section>
 
@@ -673,7 +676,7 @@ export default function Page() {
                 What is CICS
               </h2>
             </div>
-            <p className="text-base leading-relaxed text-gray-700 text-justify">
+            <p className="text-justify text-base leading-relaxed text-gray-700">
               The College of Information and Computer Studies (CICS) is a leader
               in technological education, committed to academic excellence,
               innovation, and ethical standards. We foster a dynamic and
