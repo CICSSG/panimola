@@ -5,7 +5,7 @@ import { useSidebar } from "./sidebar-context"
 import StickerButton from "./sticker-button"
 import Image from "next/image"
 import { Button } from "./ui/button"
-import { useUser } from "@clerk/nextjs"
+import { SignOutButton, useUser } from "@clerk/nextjs"
 import Link from "next/link"
 
 export default function Sidebar() {
@@ -44,7 +44,7 @@ export default function Sidebar() {
                 <X className="size-6" strokeWidth={6} color="#fc7646" />
               </Button>
             </div>
-            <nav className="relative z-2 flex flex-col gap-2 p-4 font-blackhansans text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
+            <nav className="relative z-2 flex h-full flex-col gap-2 p-4 font-blackhansans text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
               <StickerButton className="w-fit px-6 py-2 text-lg">
                 <Link href="/" className="h-full w-full" onClick={close}>
                   Home
@@ -83,15 +83,14 @@ export default function Sidebar() {
                 </Link>
               </StickerButton>
               {isSignedIn && (
-                <StickerButton className="w-fit px-6 py-2 text-lg">
-                  <Link
-                    href={`/profile/${user?.id}`}
-                    className="h-full w-full"
+                <SignOutButton>
+                  <button
                     onClick={close}
+                    className="border-2 border-black bg-[#fd7748] px-8 py-2 mt-auto w-fit"
                   >
-                    Profile
-                  </Link>
-                </StickerButton>
+                    Log Out
+                  </button>
+                </SignOutButton>
               )}
             </nav>
             <Image
