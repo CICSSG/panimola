@@ -85,7 +85,7 @@ export default function Footer() {
     <footer className="border-t-2 border-black bg-white py-10">
       <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 px-8 lg:flex-row lg:items-stretch lg:px-16">
         <div className="flex h-full flex-col lg:items-start gap-8">
-          <div className="flex flex-row gap-4">
+          <div className="grid grid-cols-2 justify-items-center gap-4">
             <Image
               src="/assets/LOGO.png"
               alt="CICSSG Logo"
