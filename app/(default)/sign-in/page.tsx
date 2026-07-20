@@ -382,7 +382,7 @@ export default function SignInPage() {
                     </p>
                     <p className="text-sm font-bold text-black/60">
                       Only 
-                      <span className="text-black/90">@dlsu-d.edu.ph</span>
+                      <span className="text-black/90">@dlsud.edu.ph</span>
                        accounts can sign in
                     </p>
                   </div>

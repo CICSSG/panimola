@@ -25,7 +25,7 @@ function SSOHandler() {
 
         // After session is set, check the primary email domain
         const email = clerk.user?.primaryEmailAddress?.emailAddress ?? ""
-        if (!email.endsWith(ALLOWED_DOMAIN)) {
+        if (!email.includes(ALLOWED_DOMAIN)) {
           await clerk.signOut()
           router.replace(`/sign-in?error=domain`)
         }
