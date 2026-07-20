@@ -14,7 +14,7 @@ const ImageContainer = ({
 }) => {
   return (
     <div
-      className="relative w-full max-w-lg min-w-0 flex-1"
+      className="relative w-full max-w-lg min-w-0 flex-1 mb-5"
       style={{ transform: `rotate(${rotate || 0}deg)` }}
     >
       {/* Window title bar */}
@@ -31,7 +31,7 @@ const ImageContainer = ({
         </div>
         {/* Image area */}
         <div
-          className={`flex ${aspect || "aspect-4/3"} items-center justify-center border-x-4 border-black`}
+          className={`flex ${aspect || "aspect-4/3"} items-center justify-center border-x-4 border-b-4 border-black`}
         >
           {children}
         </div>

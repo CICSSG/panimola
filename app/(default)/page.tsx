@@ -646,7 +646,7 @@ export default function Page() {
           {/* Right — retro window image placeholder */}
           <ImageContainer rotate={isMobile ? -2 : 2}>
             <Image
-              src={"/MainImage.png"}
+              src={"/panimola.jpg"}
               alt="Main Image"
               width={600}
               height={700}
@@ -684,7 +684,7 @@ export default function Page() {
           {/* Right — retro window image placeholder */}
           <ImageContainer rotate={-2}>
             <Image
-              src={"/MainImage.png"}
+              src={"/cics.jpg"}
               alt="Main Image"
               width={600}
               height={700}
