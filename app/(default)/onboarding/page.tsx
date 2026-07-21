@@ -369,16 +369,13 @@ export default function OnboardingPage() {
                   </p>
 
                   {/* Read-only from Clerk */}
-                  <div className="xs:grid-cols-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field label="First Name" required>
+                  <div className="grid grid-cols-1 gap-4">
+                    <Field label="Full Name" required>
                       <input
                         className={inputClass}
-                        value={firstName}
+                        value={firstName + " " + lastName}
                         disabled
                       />
-                    </Field>
-                    <Field label="Last Name" required>
-                      <input className={inputClass} value={lastName} disabled />
                     </Field>
                   </div>
 
