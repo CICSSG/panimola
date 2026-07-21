@@ -101,6 +101,7 @@ export default function UsersList() {
       data?: PageAccessSection
       "user-management"?: PageAccessSection
     } | null
+    userId?: number
   }
 
   const getData = useCallback(() => {
@@ -124,6 +125,7 @@ export default function UsersList() {
             adminRole: item.adminRole || null,
             isAdmin: item.isAdmin || false,
             pageAccess: item.pageAccess || null,
+            userId: item.userId || undefined,
           }))
 
           setUsers(mappedUsers)
@@ -411,7 +413,7 @@ export default function UsersList() {
                       <div className="font-medium">
                         {user.firstName} {user.lastName}
                       </div>
-                      <div className="text-xs text-muted-foreground">ID: {user.id.slice(0, 8)}</div>
+                      <div className="text-xs text-muted-foreground">ID: {user.userId}</div>
                     </div>
                   </TableCell>
                   <TableCell>

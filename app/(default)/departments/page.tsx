@@ -42,11 +42,11 @@ const ProgramsPage = () => {
               headerColor="bg-[#fef085]"
             >
               <Image
-                src={"/MainImage.png"}
+                src={"/csd.png"}
                 alt="Main Image"
                 width={600}
                 height={700}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain p-4"
               />
             </ImageContainer>
           </div>
@@ -117,18 +117,18 @@ const ProgramsPage = () => {
               Analytics.
             </p>
           </div>
-          <div className="mx-auto xl:ml-auto order-1 xl:order-2">
+          <div className="mx-auto xl:ml-auto order-1 xl:order-2 ">
             <ImageContainer
               rotate={4}
               aspect="aspect-16/9"
               headerColor="bg-[#fef085]"
             >
               <Image
-                src={"/MainImage.png"}
+                src={"/itd.png"}
                 alt="Main Image"
                 width={600}
                 height={700}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain p-4"
               />
             </ImageContainer>
           </div>

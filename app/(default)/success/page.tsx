@@ -1,82 +1,49 @@
 "use client"
 
-import { useClerk, useAuth } from "@clerk/nextjs"
-import { useSearchParams } from "next/navigation"
-import { useState, Suspense, useRef } from "react"
+import { useUser, SignOutButton } from "@clerk/nextjs"
+import { useRef, useState } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
+import { LogOut } from "lucide-react"
 import GridBackground from "@/components/grid-background"
 import Image from "next/image"
-import { InfoIcon } from "lucide-react"
+import Link from "next/link"
 
-const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
-
-function SignInForm() {
-  const clerk = useClerk()
-  const { isLoaded, isSignedIn } = useAuth()
-  const searchParams = useSearchParams()
-  const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/"
-  const errorParam = searchParams.get("error")
-
-  const [error, setError] = useState<string | null>(
-    errorParam === "domain"
-      ? "Only @dlsud.edu.ph accounts are allowed to sign in."
-      : null
-  )
-  const [loading, setLoading] = useState(false)
-
-  if (!isLoaded || isSignedIn) {
-    return (
-      <div className="flex items-center justify-center py-4">
-        <div className="h-6 w-6 animate-spin rounded-full border-4 border-black border-t-transparent" />
-      </div>
-    )
-  }
-
-  async function handleMicrosoftSignIn() {
-    setError(null)
-    setLoading(true)
-    try {
-      await clerk.client.signIn.authenticateWithRedirect({
-        strategy: "oauth_microsoft",
-        redirectUrl: `${window.location.origin}/sso-callback`,
-        redirectUrlComplete: redirectCallbackUrl,
-      })
-    } catch (err: any) {
-      const message =
-        err?.errors?.[0]?.longMessage ??
-        err?.errors?.[0]?.message ??
-        "Sign in failed."
-      setError(message)
-      setLoading(false)
-    }
-  }
-
+function Field({
+  id,
+  label,
+  hint,
+  required,
+  children,
+}: {
+  id?: string
+  label: string
+  hint?: string
+  required?: boolean
+  children: React.ReactNode
+}) {
   return (
-    <div className="flex flex-col gap-4">
-      {error && (
-        <div
-          className="border-4 border-black bg-red-100 px-4 py-3 text-sm font-bold text-red-800"
-          style={{ boxShadow: "3px 3px 0 black" }}
-        >
-          {error}
-        </div>
-      )}
-      <motion.button
-        onClick={handleMicrosoftSignIn}
-        disabled={loading}
-        className="w-full border-4 border-black bg-accent px-6 py-3 font-blackhansans text-base text-white uppercase [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] disabled:opacity-50"
-        style={{ boxShadow: "4px 4px 0 black" }}
-        whileHover={{ y: -2 }}
-        whileTap={{ y: 0, boxShadow: "2px 2px 0 black" }}
-        transition={{ duration: 0.1 }}
+    <div className="flex flex-col gap-1.5">
+      <label
+        htmlFor={id}
+        className="text-sm font-extrabold tracking-wide uppercase"
       >
-        {loading ? "Redirecting…" : "Sign in with Microsoft"}
-      </motion.button>      
+        {label}
+        {hint && (
+          <span className="ml-1.5 text-xs font-semibold tracking-normal text-black/40 normal-case">
+            {hint}
+          </span>
+        )}
+        {required && <span className="ml-1 text-red-500">*</span>}
+      </label>
+      {children}
     </div>
   )
 }
 
-export default function SignInPage() {
+const inputClass =
+  "w-full border-2 border-black bg-white px-3 py-2 text-sm font-semibold outline-none transition-shadow focus:shadow-[3px_3px_0_black] disabled:bg-black/10 disabled:text-black/75 focus:text-black placeholder:text-black/30 text-black/75"
+
+export default function SuccessPage() {
   const heroRef = useRef<HTMLElement>(null)
   const { scrollY } = useScroll()
   const scrollYProgress = useTransform(scrollY, [0, 400], [0, 1])
@@ -319,7 +286,7 @@ export default function SignInPage() {
                 scale: logoScale,
                 opacity: logoOpacity,
               }}
-              initial={{ opacity: 0, scale: 0.92 }}
+              initial={{ opacity: 1, scale: 1 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{
                 opacity: { duration: 0.5, delay: 0.35 },
@@ -339,7 +306,7 @@ export default function SignInPage() {
                 src="/assets/TV.png"
                 alt="Retro TV"
                 className="invisible relative z-10 w-[min(92vw,820px)] md:visible"
-                initial={{ opacity: 0, y: 0, scale: 0.9 }}
+                initial={{ opacity: 1, y: 0, scale: 1 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{
                   opacity: { duration: 0.5, delay: 0.2 },
@@ -356,46 +323,47 @@ export default function SignInPage() {
               <div className="absolute top-0 left-1/2 my-6 flex h-[75%] w-[90%] -translate-x-1/2 flex-col items-center justify-center md:bg-white"></div>
 
               <motion.div
-                className="absolute top-2/5 left-1/2 -translate-1/2 z-50 w-full border-4 border-black bg-white md:max-w-md lg:max-w-lg"
-                style={{ boxShadow: "6px 6px 0 black" }}
+                className="absolute top-2/5 left-1/2 z-50 w-full -translate-1/2 md:max-w-md lg:max-w-lg flex flex-col items-center gap-6 md:gap-12"
+                
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.15 }}
               >
-                <div className="flex flex-row items-center border-b-4 border-black bg-[#95cf56] px-6 py-3 gap-2">
-                  <Image
-                    src="/PionniThumbsUp.png"
-                    alt="Pionni Thumbs Up"
-                    width={50}
-                    height={50}
-                    className="size-16"
-                  />
-                  <h1 className="font-blackhansans text-3xl leading-none text-white [-webkit-text-stroke:1px_black]">
-                    Sign in
-                  </h1>
+                <div className="border-4 border-black bg-white w-full" style={{ boxShadow: "6px 6px 0 black" }}>
+                  <div className="relative flex flex-row items-center gap-2 border-b-4 border-black bg-[#95cf56] px-6 py-3">
+                    <Image
+                      src="/PionniThumbsUp.png"
+                      alt="Pionni Thumbs Up"
+                      width={50}
+                      height={50}
+                      className="size-16"
+                    />
+                    <h1 className="font-blackhansans text-3xl leading-none text-white [-webkit-text-stroke:1px_black]">
+                      Let's Go!
+                    </h1>
+                    <Image
+                      src="/stickers/cics froshies.png"
+                      alt="CICS Froshies Sticker"
+                      width={180}
+                      height={180}
+                      className="absolute -top-6 -right-8 size-32 -rotate-4 lg:-top-16 lg:-right-12 lg:size-44"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-5 px-6 py-7">
+                    <div>
+                      <p className="text-center text-2xl text-black">
+                        See you at Panimola and <br /> CICS College Orientation!
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-5 px-6 py-7">
-                  <div>
-                    <p className="text-sm font-bold text-black">
-                      Use your Microsoft school account.
-                    </p>
-                    <p className="text-sm font-bold text-black/60">
-                      Only 
-                      <span className="text-black/90">@dlsud.edu.ph</span>
-                       accounts can sign in
-                    </p>
-                  </div>
-                  <Suspense>
-                    <SignInForm />
-                  </Suspense>
-                  <div className="flex flex-row items-center border-2 border-black bg-[#fef085] px-4 py-2 text-xs">
-                    <InfoIcon className="mr-1 inline-block h-4 w-4" />
-                    Personal or non-school Microsoft accounts will be rejected
-                    after sign in.
-                  </div>
-                </div>
+                <Link href={"/"} className="bg-accent text-white font-blackhansans [-webkit-text-stroke:1px_black] px-6 py-3 text-lg border-2 border-black hover:bg-accent/90 hover:-translate-y-0.5 hover:scale-105 transition-all duration-500" style={{ boxShadow: "4px 4px 0 black" }}>
+                  Go back to homepage
+                </Link>
               </motion.div>
+
             </div>
           </div>
         </section>

@@ -9,6 +9,10 @@ import Image from "next/image"
 import { useMediaQuery } from "@reactuses/core"
 import { div } from "framer-motion/client"
 import Link from "next/link"
+import { useUser } from "@clerk/nextjs"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog"
+import ErrorModal from "@/components/error-modal"
 
 const float = (duration: number, amplitude: number, delay = 0) => ({
   animate: { y: [0, -amplitude, 0] },
@@ -269,6 +273,7 @@ export default function Page() {
   const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
   const [isLoaded, setIsLoaded] = useState(false)
   const [activeDay, setActiveDay] = useState(0)
+  const [isSignedInError, setIsSignedInError] = useState(false)
   const scrollYProgress = useTransform(scrollY, [0, 400], [0, 1])
 
   // Stars fly outward from center on scroll
@@ -302,6 +307,7 @@ export default function Page() {
   const btnScale = useTransform(scrollYProgress, [0, 1], [1, 0.2])
   const btnOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 1])
 
+  const { isSignedIn } = useUser()
   useEffect(() => {
     setIsLoaded(true)
   }, [])
@@ -571,13 +577,25 @@ export default function Page() {
             >
               <div className="-rotate-2">Schedule</div>
             </button>
-            <Link
-              href="/sign-in"
-              className="translate-y-5 -rotate-5 rounded-none border border-black bg-[#fef085] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
-              style={{ boxShadow: "6px 6px 0 black" }}
-            >
-              <div className="-rotate-2">Register</div>
-            </Link>
+            {!isSignedIn ? (
+              <Link
+                href="/sign-in"
+                className="translate-y-5 -rotate-5 rounded-none border border-black bg-[#fef085] px-4 py-2 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 active:translate-y-0.5 active:shadow-none md:text-2xl"
+                style={{ boxShadow: "6px 6px 0 black" }}
+              >
+                <div className="-rotate-2">Register</div>
+              </Link>
+            ) : (
+              <Button
+                onClick={() => {
+                  setIsSignedInError(true)
+                }}
+                className="translate-y-5 -rotate-5 rounded-none border border-black bg-[#fef085] px-4 py-5 md:py-6 font-blackhansans text-white transition-transform [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] hover:translate-y-4.5 hover:bg-[#fef085] active:translate-y-0.5 active:shadow-none md:text-2xl"
+                style={{ boxShadow: "6px 6px 0 black" }}
+              >
+                <div className="-rotate-2">Register</div>
+              </Button>
+            )}
           </motion.div>
         </div>
       </section>
@@ -841,6 +859,24 @@ export default function Page() {
           />
         </div>
       </section>
+
+      {isSignedInError && (
+        <Dialog open={isSignedInError} onOpenChange={setIsSignedInError}>
+          <DialogContent
+            showCloseButton={false}
+            className="border-0 bg-transparent shadow-none ring-0 outline-0"
+          >
+            <ErrorModal title="Let's Go!">
+              <p className="text-center text-lg">
+                You are already registered!
+                <br />
+                See you at Panimola and<br />
+                CICS College Orientation!
+              </p>
+            </ErrorModal>
+          </DialogContent>
+        </Dialog>
+      )}
     </GridBackground>
   )
 }

@@ -17,4 +17,5 @@ export type User = {
   adminRole?: "superadmin" | "admin" | null
   isAdmin?: boolean
   pageAccess?: PageAccess | null
+  userId?: number
 }

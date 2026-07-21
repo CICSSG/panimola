@@ -18,7 +18,7 @@ const ImageContainer = ({
       style={{ transform: `rotate(${rotate || 0}deg)` }}
     >
       {/* Window title bar */}
-      <div className="relative z-2">
+      <div className="relative z-2 bg-white">
         <div
           className={`flex items-center justify-between border-4 border-black ${headerColor || "bg-[#95cf56]"}`}
         >

@@ -39,7 +39,7 @@ function Field({
 }
 
 const inputClass =
-  "w-full border-4 border-black bg-white px-3 py-2 text-sm font-semibold outline-none transition-shadow focus:shadow-[3px_3px_0_black] disabled:bg-black/5 disabled:text-black/40"
+  "w-full border-2 border-black bg-white px-3 py-2 text-sm font-semibold outline-none transition-shadow focus:shadow-[3px_3px_0_black] disabled:bg-black/10 disabled:text-black/75 focus:text-black placeholder:text-black/30 text-black/75"
 
 export default function OnboardingPage() {
   const heroRef = useRef<HTMLElement>(null)
@@ -109,7 +109,7 @@ export default function OnboardingPage() {
     })
 
     if (res.ok) {
-      window.location.href = "/"
+      window.location.href = "/success"
     } else {
       const data = await res.json()
       setError(data.message ?? "Something went wrong")
@@ -402,9 +402,10 @@ export default function OnboardingPage() {
                           const val = e.target.value.toUpperCase()
                           if (/^[A-Z]{0,3}\d{0,2}$/.test(val)) setCys(val)
                         }}
-                        placeholder="BIT11"
+                        placeholder=""
                         maxLength={5}
                         required
+                        autoFocus
                       />
                     </Field>
 
@@ -417,7 +418,7 @@ export default function OnboardingPage() {
                           if (/^\d{0,9}$/.test(e.target.value))
                             setStudentNumber(e.target.value)
                         }}
-                        placeholder="202612345"
+                        placeholder="e.g., 202612345"
                         maxLength={9}
                         required
                       />
@@ -427,14 +428,14 @@ export default function OnboardingPage() {
                   <Field
                     id="facebookLink"
                     label="Facebook Link"
-                    hint="optional"
+                    hint="(optional)"
                   >
                     <input
                       id="facebookLink"
                       className={inputClass}
                       value={facebookLink}
                       onChange={(e) => setFacebookLink(e.target.value)}
-                      placeholder="https://facebook.com/yourprofile"
+                      placeholder="e.g., https://facebook.com/yourprofile"
                       type="url"
                     />
                   </Field>
