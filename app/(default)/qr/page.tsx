@@ -10,6 +10,7 @@ const QR = () => {
   const { user } = useUser()
   const QRref = useRef<ReactQRCodeRef>(null)
   const [userData, setUserData] = useState<any>(null)
+ 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -21,7 +22,6 @@ const QR = () => {
           },
         })
         const data = await response.json()
-        console.log("Fetched user data:", data)
         setUserData(data[0])
       } catch (error) {
         console.error("Error fetching user data:", error)
