@@ -15,9 +15,7 @@ const isManagementRoutes = createRouteMatcher([
   "/data(.*)",
 ])
 const isLoggedInRoute = createRouteMatcher([
-  "/connect(.*)",
-  "/profile(.*)",
-  "/missions(.*)",
+  "/qr(.*)",
 ])
 const isAuthRoute = createRouteMatcher(["/sign-in", "/sso-callback"])
 const isOnboardingRoute = createRouteMatcher(["/onboarding"])

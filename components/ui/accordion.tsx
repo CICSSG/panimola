@@ -48,7 +48,7 @@ function AccordionTrigger({
         {...props}
       >
         {children}
-        <Triangle fill="white" strokeWidth={1} stroke="black" size={8} data-slot="accordion-trigger-icon" className="text-xl pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:rotate-180 rotate-0 transition-all duration-300" />
+        <Triangle fill="white" strokeWidth={1} stroke="black" size={8} data-slot="accordion-trigger-icon" className="text-xl pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:rotate-0 rotate-180 transition-all duration-300" />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )

@@ -102,7 +102,7 @@ const ProgramsPage = () => {
         </Accordion>
       </section>
 
-      <section className="mx-4 mb-12 flex max-w-7xl flex-col xl:mx-auto gap-12">
+      <section className="mx-4 mb-12 flex max-w-7xl flex-col xl:mx-auto xl:gap-12">
         <div className="grid items-center gap-12 xl:grid-cols-2">
           <div className="border border-black bg-white order-2 xl:order-1">
             <h1 className="border-b border-black bg-accent py-4 text-center font-blackhansans text-3xl text-white [-webkit-text-stroke:1px_black]">

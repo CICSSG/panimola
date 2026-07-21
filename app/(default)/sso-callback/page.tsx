@@ -12,7 +12,7 @@ function SSOHandler() {
   const clerk = useClerk()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/"
+  const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/onboarding"
 
   useEffect(() => {
     clerk

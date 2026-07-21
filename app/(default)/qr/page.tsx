@@ -4,6 +4,7 @@ import { ReactQRCode, type ReactQRCodeRef } from "@lglab/react-qr-code"
 import GridBackground from "@/components/grid-background"
 import { Menu, X } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
+import Link from "next/link";
 
 const QR = () => {
   const { user } = useUser()
@@ -165,9 +166,9 @@ const QR = () => {
             <span className="px-3 font-blackhansans font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
               Your QR Code
             </span>
-            <span className="flex flex-col items-center justify-center border-l-2 border-black px-4 py-2 text-xs leading-none font-bold select-none">
+            <Link href="/" className="flex flex-col items-center justify-center border-l-2 border-black px-4 py-2 text-xs leading-none font-bold select-none hover:bg-red-600">
               <X strokeWidth={4} />
-            </span>
+            </Link>
           </div>
           {/* Image area */}
           <div className="flex aspect-4/3 items-center justify-center border-4 border-t-0 border-black bg-white">
