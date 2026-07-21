@@ -18,4 +18,5 @@ export type User = {
   isAdmin?: boolean
   pageAccess?: PageAccess | null
   userId?: number
+  attendance?: Date | null
 }

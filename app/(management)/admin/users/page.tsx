@@ -42,7 +42,7 @@ export default function UsersList() {
   const pageAccess = metadata?.pageAccess?.manage as PageAccessSection | undefined
   const { canView: canViewUsersPage, canEdit: canEditUsersPage } = getManagementPageAccessState(
     metadata,
-    "manage",
+    "user-management",
     ["/users"],
   )
   const [users, setUsers] = useState<User[]>(emptyList)
@@ -71,7 +71,7 @@ export default function UsersList() {
   useEffect(() => {
     if (user && !canViewUsersPage) {
       toast.error("You don't have permission to access this page")
-      router.push("/admin/dashboard")
+      router.push("/")
       return
     }
   }, [user, canViewUsersPage, router])
@@ -249,6 +249,7 @@ export default function UsersList() {
       month: "short",
       day: "numeric",
       year: "numeric",
+      timeZone: "Asia/Manila",
     })
   }
 
