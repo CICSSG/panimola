@@ -16,7 +16,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { SignOutButton } from "@clerk/nextjs"
+import { SignOutButton, useClerk } from "@clerk/nextjs"
 import {
   EllipsisVerticalIcon,
   CircleUserRoundIcon,
@@ -27,7 +27,7 @@ import {
 
 export function NavUser({ user }: { user: any }) {
   const { isMobile } = useSidebar()
-  console.log("User in NavUser:", user)
+  const { signOut } = useClerk()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -50,7 +50,7 @@ export function NavUser({ user }: { user: any }) {
             <EllipsisVerticalIcon className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="min-w-56"
+            className="relative z-50 min-w-56"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -89,9 +89,9 @@ export function NavUser({ user }: { user: any }) {
               </DropdownMenuItem>
             </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className="relative z-50 flex cursor-pointer flex-row items-center gap-2">
               <SignOutButton>
-                <div className="flex flex-row gap-2 items-center hover:bg-primary/30 rounded-md w-full px-2 py-1 cursor-pointer">
+                <div className="flex w-full cursor-pointer flex-row items-center gap-2 rounded-md px-2 py-1 hover:bg-primary/30">
                   <LogOutIcon />
                   Log out
                 </div>

@@ -105,7 +105,7 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
           className="mx-2 ml-auto h-4 data-vertical:self-auto"
         />
 
-        <SidebarMenuItem key="test">
+        <SidebarMenuItem key="test" className="mt-2 relative z-1">
           <SidebarMenuButton
             tooltip="Switch Theme"
             className={open ? "border p-2" : "border"}

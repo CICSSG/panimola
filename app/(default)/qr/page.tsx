@@ -22,6 +22,7 @@ const QR = () => {
           },
         })
         const data = await response.json()
+        // data[0].userId = 1005
         setUserData(data[0])
       } catch (error) {
         console.error("Error fetching user data:", error)
