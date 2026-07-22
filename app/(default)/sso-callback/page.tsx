@@ -42,7 +42,7 @@ function SSOHandler() {
   }
 
   useEffect(() => {
-    console.log("isLoaded:", isLoaded)
+    // console.log("isLoaded:", isLoaded)
     if (isLoaded) {
       triggerSSO()
     }
