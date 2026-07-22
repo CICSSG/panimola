@@ -1,7 +1,7 @@
 "use client"
 
 import { useClerk, useAuth } from "@clerk/nextjs"
-import { useRouter, useSearchParams } from "next/navigation"
+import { redirect, useRouter, useSearchParams } from "next/navigation"
 import { useState, Suspense, useRef, useEffect } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import GridBackground from "@/components/grid-background"
@@ -57,7 +57,7 @@ function SignInForm({isLoaded} : {isLoaded: boolean}) {
           className="border-4 border-black bg-red-100 px-4 py-3 text-sm font-bold text-red-800"
           style={{ boxShadow: "3px 3px 0 black" }}
         >
-          {error}
+          {error == "You're already signed in." ? "You're already signed in. Please reload the page." : error}
         </div>
       )}
       <motion.button
@@ -114,9 +114,11 @@ export default function SignInPage() {
   const btnOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 1])
 
   useEffect(() => {
-    if (isSignedIn) {
-      router.push(`${window.location.origin}/onboarding`)
-    }
+    setTimeout(() => {
+      if (isSignedIn) {
+        redirect("/onboarding")
+      }
+    }, 2000)
   }, [isSignedIn])
 
   return (

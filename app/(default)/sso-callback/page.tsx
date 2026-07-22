@@ -1,6 +1,6 @@
 "use client"
 
-import { useClerk } from "@clerk/nextjs"
+import { useAuth, useClerk } from "@clerk/nextjs"
 import { useSearchParams } from "next/navigation"
 import { useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
@@ -10,11 +10,12 @@ const ALLOWED_DOMAIN = "@dlsud.edu.ph"
 
 function SSOHandler() {
   const clerk = useClerk()
+  const { isLoaded } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/onboarding"
 
-  useEffect(() => {
+  function triggerSSO(){
     clerk
       .handleRedirectCallback({
         signInFallbackRedirectUrl: redirectCallbackUrl,
@@ -33,7 +34,13 @@ function SSOHandler() {
       .catch(() => {
         router.replace("/sign-in")
       })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }
+  
+  useEffect(() => {
+    if (isLoaded) {
+      triggerSSO()
+    }
+  }, [isLoaded]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flex min-h-svh items-center justify-center flex-col gap-4">
