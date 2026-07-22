@@ -6,11 +6,13 @@ const ImageContainer = ({
   rotate,
   aspect,
   headerColor,
+  title
 }: {
   children?: React.ReactNode
   rotate?: number
   aspect?: "aspect-4/3" | "aspect-16/9"
   headerColor?: string
+  title?: string
 }) => {
   return (
     <div
@@ -22,8 +24,8 @@ const ImageContainer = ({
         <div
           className={`flex items-center justify-between border-4 border-black ${headerColor || "bg-[#95cf56]"}`}
         >
-          <span className="px-3 font-blackhansans font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill]">
-            &lt;image&gt;
+          <span className="px-3 font-blackhansans font-bold text-white [-webkit-text-stroke:2px_black] [paint-order:stroke_fill] text-nowrap truncate max-w-xs">
+            {title || "<image>"}
           </span>
           <span className="flex flex-col items-center justify-center border-l-2 border-black px-4 py-2 text-xs leading-none font-bold select-none">
             <X strokeWidth={4} />

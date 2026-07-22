@@ -40,6 +40,7 @@ const ProgramsPage = () => {
               rotate={-4}
               aspect="aspect-16/9"
               headerColor="bg-[#fef085]"
+              title="Computer Science Department"
             >
               <Image
                 src={"/csd.png"}
@@ -122,6 +123,7 @@ const ProgramsPage = () => {
               rotate={4}
               aspect="aspect-16/9"
               headerColor="bg-[#fef085]"
+              title="Information Technology Department"
             >
               <Image
                 src={"/itd.png"}
