@@ -352,7 +352,8 @@ export default function SuccessPage() {
 
                   <div className="flex flex-col gap-5 px-6 py-7">
                     <div>
-                      <p className="text-center text-2xl text-black">
+                      <p className="text-center text-xl text-black">
+                        View your QR by clicking the QR button at the bottom of the page.<br /><br />
                         See you at Panimola and <br /> CICS College Orientation!
                       </p>
                     </div>

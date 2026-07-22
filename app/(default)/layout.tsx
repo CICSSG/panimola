@@ -75,7 +75,7 @@ export default function DefaultLayout({
             )}
             <Link
               href={"/qr"}
-              className="flex size-16 flex-row items-center justify-center gap-2 rounded-full border border-black bg-accent text-sm font-medium text-black hover:bg-accent/90"
+              className="flex size-16 flex-row items-center justify-center gap-2 rounded-full border border-black bg-accent text-sm font-medium text-black hover:bg-accent/90 animate-pulse duration-1000 ease-in-out delay-[0s, 1500ms] hover:animate-none transition-all"
               style={{ boxShadow: "2px 2px 0px #000000" }}
             >
               <div
