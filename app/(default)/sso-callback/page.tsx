@@ -15,7 +15,7 @@ function SSOHandler() {
   const searchParams = useSearchParams()
   const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/onboarding"
 
-  function triggerSSO(){
+  function triggerSSO() {
     clerk
       .handleRedirectCallback({
         signInFallbackRedirectUrl: redirectCallbackUrl,
@@ -26,26 +26,32 @@ function SSOHandler() {
 
         // After session is set, check the primary email domain
         const email = clerk.user?.primaryEmailAddress?.emailAddress ?? ""
+        if (!email) {
+          return
+        }
+
         if (!email.includes(ALLOWED_DOMAIN)) {
-          await clerk.signOut()
-          router.replace(`/sign-in?error=domain`)
+          await clerk.signOut().then(() => {
+            router.replace(`/sign-in?error=domain`)
+          })
         }
       })
       .catch(() => {
         router.replace("/sign-in")
       })
   }
-  
+
   useEffect(() => {
+    console.log("isLoaded:", isLoaded)
     if (isLoaded) {
       triggerSSO()
     }
-  }, [isLoaded]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [clerk, isLoaded]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex min-h-svh items-center justify-center flex-col gap-4">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-4">
       <p className="text-sm text-muted-foreground">Completing sign in…</p>
-      <div id="clerk-captcha" />    
+      <div id="clerk-captcha" />
     </div>
   )
 }
