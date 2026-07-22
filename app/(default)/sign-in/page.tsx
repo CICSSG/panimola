@@ -1,8 +1,8 @@
 "use client"
 
 import { useClerk, useAuth } from "@clerk/nextjs"
-import { useSearchParams } from "next/navigation"
-import { useState, Suspense, useRef } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState, Suspense, useRef, useEffect } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import GridBackground from "@/components/grid-background"
 import Image from "next/image"
@@ -10,9 +10,8 @@ import { InfoIcon } from "lucide-react"
 
 const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
 
-function SignInForm() {
+function SignInForm({isLoaded} : {isLoaded: boolean}) {
   const clerk = useClerk()
-  const { isLoaded, isSignedIn } = useAuth()
   const searchParams = useSearchParams()
   const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/"
   const errorParam = searchParams.get("error")
@@ -24,7 +23,7 @@ function SignInForm() {
   )
   const [loading, setLoading] = useState(false)
 
-  if (!isLoaded || isSignedIn) {
+  if (!isLoaded) {
     return (
       <div className="flex items-center justify-center py-4">
         <div className="h-6 w-6 animate-spin rounded-full border-4 border-black border-t-transparent" />
@@ -71,13 +70,15 @@ function SignInForm() {
         transition={{ duration: 0.1 }}
       >
         {loading ? "Redirecting…" : "Sign in with Microsoft"}
-      </motion.button>      
+      </motion.button>  
     </div>
   )
 }
 
 export default function SignInPage() {
   const heroRef = useRef<HTMLElement>(null)
+  const router = useRouter()
+  const { isLoaded, isSignedIn } = useAuth()
   const { scrollY } = useScroll()
   const scrollYProgress = useTransform(scrollY, [0, 400], [0, 1])
 
@@ -111,6 +112,12 @@ export default function SignInPage() {
   const btnScrollY = useTransform(scrollYProgress, [0, 1], [0, -250])
   const btnScale = useTransform(scrollYProgress, [0, 1], [1, 0.2])
   const btnOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 1])
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push(`${window.location.origin}/onboarding`)
+    }
+  }, [isSignedIn])
 
   return (
     <>
@@ -387,7 +394,7 @@ export default function SignInPage() {
                     </p>
                   </div>
                   <Suspense>
-                    <SignInForm />
+                    <SignInForm isLoaded={isLoaded} />
                   </Suspense>
                   <div className="flex flex-row items-center border-2 border-black bg-[#fef085] px-4 py-2 text-xs">
                     <InfoIcon className="mr-1 inline-block h-4 w-4" />

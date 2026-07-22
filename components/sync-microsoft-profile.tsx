@@ -1,13 +1,18 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { useUser } from "@clerk/nextjs"
+import { useEffect } from "react"
 
 export default function SyncMicrosoftProfile() {
-  useEffect(() => {
-    fetch("/api/sync-microsoft-profile", {
-      method: "POST",
-    });
-  }, []);
+  const { isSignedIn } = useUser()
 
-  return null;
+  useEffect(() => {
+    if (isSignedIn) {
+      fetch("/api/sync-microsoft-profile", {
+        method: "POST",
+      })
+    }
+  }, [isSignedIn])
+
+  return null
 }

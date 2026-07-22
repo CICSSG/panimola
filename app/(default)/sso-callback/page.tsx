@@ -36,8 +36,9 @@ function SSOHandler() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex min-h-svh items-center justify-center">
+    <div className="flex min-h-svh items-center justify-center flex-col gap-4">
       <p className="text-sm text-muted-foreground">Completing sign in…</p>
+      <div id="clerk-captcha" />    
     </div>
   )
 }
