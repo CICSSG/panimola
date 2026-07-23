@@ -389,7 +389,7 @@ export default function SignInPage() {
                 <div className="flex flex-col gap-5 px-6 py-7">
                   <div>
                     <p className="text-sm font-bold text-black">
-                      Use your Microsoft school account.
+                      Use your Microsoft account. (School account preferred)
                     </p>
                     {process.env.NEXT_PUBLIC_ENVIRONMENT === "production" && (
                       <p className="text-sm text-black/60">
