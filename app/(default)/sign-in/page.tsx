@@ -10,7 +10,7 @@ import { InfoIcon } from "lucide-react"
 
 const IS_PRODUCTION = process.env.NEXT_PUBLIC_ENVIRONMENT === "production"
 
-function SignInForm({isLoaded} : {isLoaded: boolean}) {
+function SignInForm({ isLoaded }: { isLoaded: boolean }) {
   const clerk = useClerk()
   const searchParams = useSearchParams()
   const redirectCallbackUrl = searchParams.get("redirect_url") ?? "/"
@@ -57,7 +57,9 @@ function SignInForm({isLoaded} : {isLoaded: boolean}) {
           className="border-4 border-black bg-red-100 px-4 py-3 text-sm font-bold text-red-800"
           style={{ boxShadow: "3px 3px 0 black" }}
         >
-          {error == "You're already signed in." ? "You're already signed in. Please reload the page." : error}
+          {error == "You're already signed in."
+            ? "You're already signed in. Please reload the page."
+            : error}
         </div>
       )}
       <motion.button
@@ -70,7 +72,7 @@ function SignInForm({isLoaded} : {isLoaded: boolean}) {
         transition={{ duration: 0.1 }}
       >
         {loading ? "Redirecting…" : "Sign in with Microsoft"}
-      </motion.button>  
+      </motion.button>
     </div>
   )
 }
@@ -365,13 +367,13 @@ export default function SignInPage() {
               <div className="absolute top-0 left-1/2 my-6 flex h-[75%] w-[90%] -translate-x-1/2 flex-col items-center justify-center md:bg-white"></div>
 
               <motion.div
-                className="absolute top-2/5 left-1/2 -translate-1/2 z-50 w-full border-4 border-black bg-white md:max-w-md lg:max-w-lg"
+                className="absolute top-2/5 left-1/2 z-50 w-full -translate-1/2 border-4 border-black bg-white md:max-w-md lg:max-w-lg"
                 style={{ boxShadow: "6px 6px 0 black" }}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.15 }}
               >
-                <div className="flex flex-row items-center border-b-4 border-black bg-[#95cf56] px-6 py-3 gap-2">
+                <div className="flex flex-row items-center gap-2 border-b-4 border-black bg-[#95cf56] px-6 py-3">
                   <Image
                     src="/PionniThumbsUp.png"
                     alt="Pionni Thumbs Up"
@@ -389,20 +391,24 @@ export default function SignInPage() {
                     <p className="text-sm font-bold text-black">
                       Use your Microsoft school account.
                     </p>
-                    <p className="text-sm font-bold text-black/60">
-                      Only 
-                      <span className="text-black/90">@dlsud.edu.ph</span>
-                       accounts can sign in
-                    </p>
+                    {process.env.NEXT_PUBLIC_ENVIRONMENT === "production" && (
+                      <p className="text-sm text-black/60">
+                        Only&nbsp;
+                        <span className="text-black/90">@dlsud.edu.ph</span>
+                        &nbsp;accounts can sign in
+                      </p>
+                    )}
                   </div>
                   <Suspense>
                     <SignInForm isLoaded={isLoaded} />
                   </Suspense>
-                  <div className="flex flex-row items-center border-2 border-black bg-[#fef085] px-4 py-2 text-xs">
-                    <InfoIcon className="mr-1 inline-block h-4 w-4" />
-                    Personal or non-school Microsoft accounts will be rejected
-                    after sign in.
-                  </div>
+                  {process.env.NEXT_PUBLIC_ENVIRONMENT === "production" && (
+                    <div className="flex flex-row items-center border-2 border-black bg-[#fef085] px-4 py-2 text-xs">
+                      <InfoIcon className="mr-1 inline-block h-4 w-4" />
+                      Personal or non-school Microsoft accounts will be rejected
+                      after sign in.
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </div>
