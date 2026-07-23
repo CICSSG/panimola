@@ -36,7 +36,9 @@ const COA: { date: string; activities: Activity[] }[] = [
         title: "Animo Walk",
         times: [
           "6:30 AM - 7:00 AM - Assembly Period",
-          "7:00 AM - 8:30 AM - Walk Proper",
+          "7:00 AM - 7:30 AM - Final Preparation",
+          "7:30 AM - 8:00 AM - Opening Program",
+          "8:00 AM - 9:00 AM - Walk Proper",
         ],
         sticker: "/stickers/cics froshies.png",
         stickerStyle: "-translate-y-18 mx-auto size-60",
@@ -59,7 +61,7 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "Bazaar",
-        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        times: ["8:00 AM - 5:00 PM - University Lane"],
         sticker: "/stickers/ctrl z.png",
         stickerStyle: "size-50",
       },
@@ -71,7 +73,7 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "Campus Tour of CCJE and COED",
-        times: ["1:00 PM - 4:00 PM - DLSU-D Grounds (Specific)"],
+        times: ["1:00 PM - 4:00 PM - Gate 1 Rotunda"],
       },
     ],
   },
@@ -92,7 +94,7 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "Bazaar",
-        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        times: ["8:00 AM - 5:00 PM - University Lane"],
         sticker: "/stickers/CICS PIONNI.png",
         stickerStyle: "size-50",
       },
@@ -108,7 +110,7 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "PAGbahagi",
-        times: ["1:30 PM - 4:30 PM - (Tentative)"],
+        times: ["10:00 AM - 5:00 PM - (Br. Gus Complex)"],
         sticker: "/stickers/pionni error.png",
         stickerStyle: "size-60",
       },
@@ -125,19 +127,19 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "Bazaar",
-        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        times: ["8:00 AM - 5:00 PM - University Lane"],
         sticker: "/stickers/goodluck.png",
         stickerStyle: "rotate-25 size-40",
       },
       {
         title: "College Orientation for CCJE",
-        times: ["8:00 AM - 12:00 NN - Exhibit Hall at CEAT Bldg"],
+        times: ["8:00 AM - 12:00 NN - ADG Reception Hall"],
         sticker: "/stickers/CICS PIONNI.png",
         stickerStyle: "size-50",
       },
       {
         title: "Campus Tour of CTHM",
-        times: ["8:00 AM - 11:00 AM - DLSU-D Grounds (Specific)"],
+        times: ["8:00 AM - 11:00 AM - Gate 1 Rotunda"],
       },
       {
         title: "Holy Mass",
@@ -153,17 +155,17 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "Campus Tour of CEAT",
-        times: ["1:00 PM - 4:00 PM - DLSU-D Grounds (Specific)"],
+        times: ["1:00 PM - 4:00 PM - DLSU-D Grandstand"],
       },
       {
         title: "College Orientation for COED",
-        times: ["1:00 PM - 5:00 PM - Exhibit Hall at CEAT Bldg"],
+        times: ["1:00 PM - 5:00 PM - ADG Reception Hall"],
         sticker: "/stickers/pionni yapping.png",
         stickerStyle: "size-60",
       },
       {
         title: "PAGbahagi",
-        times: ["1:30 PM - 4:30 PM - (Tentative)"],
+        times: ["10:00 AM - 5:00 PM - (Br. Gus Complex)"],
       },
     ],
   },
@@ -178,7 +180,7 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "Bazaar",
-        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        times: ["8:00 AM - 5:00 PM - University Lane"],
         sticker: "/stickers/goodluck.png",
         stickerStyle: "rotate-25 size-40",
       },
@@ -190,15 +192,19 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "College Orientation for CBAA",
-        times: ["8:00 AM - 12:00 NN - Exhibit Hall at CEAT Bldg"],
+        times: ["8:00 AM - 12:00 NN - MTH Court"],
         sticker: "/stickers/pionni thumbs up.png",
         stickerStyle: "size-40",
       },
       {
-        title: "Campus Tour of CLAC and COS",
-        times: ["8:00 AM - 11:00 PM - DLSU-D Grounds (Specific)"],
+        title: "Campus Tour of CLAC",
+        times: ["8:00 AM - 11:00 PM - DLSU-D Grandstand"],
         sticker: "/stickers/ctrl z.png",
         stickerStyle: "size-50",
+      },
+      {
+        title: "Campus Tour of COS",
+        times: ["8:00 AM - 11:00 PM - Gate 1 Rotunda"],
       },
       {
         title: "Holy Mass",
@@ -218,13 +224,13 @@ const COA: { date: string; activities: Activity[] }[] = [
       },
       {
         title: "Campus Tour of CBAA and CICS",
-        times: ["1:00 PM - 4:00 PM - DLSU-D Grounds (Specific)"],
+        times: ["1:00 PM - 4:00 PM - DLSU-D Grandstand"],
         sticker: "/stickers/pionni yapping.png",
         stickerStyle: "size-60",
       },
       {
         title: "PAGbahagi",
-        times: ["1:30 PM - 4:30 PM - (Tentative)"],
+        times: ["10:00 AM - 5:00 PM - (Br. Gus Complex)"],
       },
     ],
   },
@@ -232,14 +238,8 @@ const COA: { date: string; activities: Activity[] }[] = [
     date: "July 31, 2026",
     activities: [
       {
-        title: "Recruitment Booths",
-        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
-        sticker: "/stickers/cics froshies.png",
-        stickerStyle: "-translate-y-18 mx-auto size-60",
-      },
-      {
         title: "Bazaar",
-        times: ["8:00 AM - 5:00 PM - DLSU-D Grounds"],
+        times: ["8:00 AM - 5:00 PM - University Lane"],
         sticker: "/stickers/goodluck.png",
         stickerStyle: "rotate-25 size-40",
       },
