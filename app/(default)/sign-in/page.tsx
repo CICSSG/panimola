@@ -71,6 +71,13 @@ function SignInForm({ isLoaded }: { isLoaded: boolean }) {
         whileTap={{ y: 0, boxShadow: "2px 2px 0 black" }}
         transition={{ duration: 0.1 }}
       >
+        <Image 
+          src="/microsoft-logo.png"
+          alt="Microsoft logo"
+          width={25}
+          height={25}
+          className="mr-4 inline-block -rotate-4"
+        />
         {loading ? "Redirecting…" : "Sign in with Microsoft"}
       </motion.button>
     </div>
