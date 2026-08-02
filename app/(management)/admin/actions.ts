@@ -51,6 +51,39 @@ export async function getCompaniesForAssignment(): Promise<{
   }
 }
 
+export type DashboardStats = {
+  totals: {
+    totalUsers: number
+    totalAdmins: number
+    totalAttendance: number
+    attendanceRate: number
+    usersWithResume: number
+    resumeRate: number
+  }
+  roleDistribution: Array<{ name: string; value: number }>
+  courseDistribution: Array<{ name: string; value: number }>
+  domainDistribution: Array<{ name: string; value: number }>
+  signupsByDay: Array<{ date: string; count: number }>
+  attendanceByDay: Array<{ date: string; count: number }>
+}
+
+export async function getDashboardStats(): Promise<{
+  success: boolean
+  data?: DashboardStats
+  error?: string
+}> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getDashboardStats`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+    if (!response.ok) throw new Error("Failed to fetch dashboard stats")
+    return response.json()
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
+  }
+}
+
 export async function getCollectionData(collection: string) {
   try {
     const response = await fetch(
